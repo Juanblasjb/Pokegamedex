@@ -22,8 +22,8 @@ const ILLUSTRATIONS = {
     '/assets/gym_leaders/lance_full_art.png',
     '/assets/gym_leaders/blue_full_art.png',
   ],
-  safari: ['https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/115.png'],
-  rocket: ['https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/52.png']
+  safari: ['assets/pokemon/normal/115.png'],
+  rocket: ['assets/pokemon/normal/53.png']
 };
 
 // --- CONFIGURACIÓN DE MODOS ---

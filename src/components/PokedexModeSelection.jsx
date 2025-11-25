@@ -3,8 +3,8 @@ import { ArrowLeft, BookOpen, Skull, Play, ChevronLeft, ChevronRight } from 'luc
 
 // --- CONFIGURACIÓN DE ILUSTRACIONES ---
 const ILLUSTRATIONS = {
-  normal: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-  hard: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
+  normal: 'assets/pokemon/normal/25.png',
+  hard: 'assets/pokemon/normal/150.png',
 };
 
 // --- CONFIGURACIÓN DE MODOS ---
