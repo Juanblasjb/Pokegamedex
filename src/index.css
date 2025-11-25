@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- ANIMACIONES GENERALES --- */
+
+/* Flotar suave (Usado en imágenes de Pokémon y Loading) */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Rotaciones (Usado en los anillos de carga) */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes reverse-spin {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+.animate-reverse-spin {
+  animation: reverse-spin 6s linear infinite;
+}
+
+/* --- EFECTO SHINY --- */
+
+/* Explosión de estrella */
+@keyframes shiny-pop {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+  100% { transform: scale(0) rotate(90deg); opacity: 0; }
+}
+.animate-shiny-pop {
+  animation: shiny-pop 1.5s ease-out forwards;
+}
+
+/* Pulso rápido de fondo */
+@keyframes pulse-fast {
+  0%, 100% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+}
+.animate-pulse-fast {
+  animation: pulse-fast 0.8s ease-in-out forwards;
+}
+
+/* --- EFECTOS MEWTWO LOADING (PANTALLA DE CARGA) --- */
+
+/* Núcleo de energía en las manos */
+@keyframes pulse-core {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+  50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 40px rgba(34, 211, 238, 0.8); }
+}
+.animate-pulse-core {
+  animation: pulse-core 2s infinite ease-in-out;
+}
+
+@keyframes lightning-flash {
+  0% { opacity: 0; transform: scaleY(0.5) scaleX(0.5); }
+  5% { opacity: 1; transform: scaleY(1.2) scaleX(1); filter: brightness(2); }
+  10% { opacity: 0; }
+  15% { opacity: 0.8; transform: scaleY(0.8) scaleX(1.2); }
+  20% { opacity: 0; }
+  40% { opacity: 0.5; transform: scaleY(1) scaleX(0.9); }
+  100% { opacity: 0; }
+}
+
+.animate-lightning {
+  /* Dura 2 segundos, pero la acción ocurre rápido al principio, luego pausa */
+  animation: lightning-flash 2s infinite linear; 
+}
+
+/* Chispas/Partículas flotantes */
+@keyframes spark-float {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* Clase de utilidad para partículas generadas por JS */
+.particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* --- SCROLLBAR DARK SCI-FI (Estilo Global) --- */
+
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b #0f172a; /* Thumb(Slate800) Track(Slate900) */
+}
+
+/* Chrome, Edge, Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Ancho fino (w-[6px]) */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0f172a; /* Fondo Slate 900 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #1e293b; /* Base Slate 800 */
+  border: 1px solid #334155; /* Borde Slate 700 */
+  border-radius: 0px; /* Angular (Cuadrado) */
+  transition: all 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #0891b2; /* Cyan 600 al hacer hover */
+  border-color: #22d3ee; /* Borde Cyan 400 */
+  box-shadow: 0 0 10px #06b6d4; /* Glow de neón Cyan */
+}
+
+@keyframes scan-vertical {
+    0% { top: -10%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 110%; opacity: 0; }
+  }
+  @keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+  }
