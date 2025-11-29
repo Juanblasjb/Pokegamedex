@@ -10,6 +10,8 @@ import GymSelection from './components/GymSelection';
 import PokedexModeSelection from './components/PokedexModeSelection';
 import PokemonQuizHard from './components/PokemonQuizHard';
 import UnlockModal from './components/UnlockModal'; 
+import GymBattle from './components/GymBattle';
+import UnlockRocketModal from './components/UnlockRocketModal';
 
 function App() {
   // --- ESTADOS DE NAVEGACIÓN Y SISTEMA ---
@@ -20,9 +22,12 @@ function App() {
   const [selectedGameMode, setSelectedGameMode] = useState('pokedex');  
   const [sessionStartTime, setSessionStartTime] = useState(null);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [showRocketUnlockModal, setShowRocketUnlockModal] = useState(false);
   
-  // --- ESTADO DE DATOS (SOLUCIÓN AL BUG DE PERFILES) ---
-  // En lugar de leer localStorage en el render, usamos este estado como fuente de verdad para la UI
+  // Nuevo estado para controlar qué gimnasio se seleccionó
+  const [selectedGymId, setSelectedGymId] = useState(null);
+  
+  // --- ESTADO DE DATOS ---
   const [currentSaveData, setCurrentSaveData] = useState({});
 
   const [profiles, setProfiles] = useState(() => {
@@ -33,12 +38,9 @@ function App() {
 
   // --- LÓGICA DE DESBLOQUEO ---
   const handleGameCapture = (totalCaptures) => {
-    // 1. Actualizamos el estado visual de la App en tiempo real
-    // Esto asegura que si volvemos al menú, la barra de progreso ya esté actualizada
     const newSaveData = JSON.parse(localStorage.getItem('pokemonQuizSaveData') || '{}');
     setCurrentSaveData(newSaveData);
 
-    // 2. Verificamos desbloqueo de Gym
     if (currentProfile && !currentProfile.gymUnlocked && totalCaptures >= 5) {
         setShowUnlockModal(true);
         const updatedProfile = { ...currentProfile, gymUnlocked: true };
@@ -50,9 +52,21 @@ function App() {
         setProfiles(updatedProfilesList);
         localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
     }
+
+  if (currentProfile && !currentProfile.rocketUnlocked && totalCaptures >= 15) {
+        setShowRocketUnlockModal(true); // Modal Rojo (Rocket)
+        const updatedProfile = { ...currentProfile, rocketUnlocked: true };
+        setCurrentProfile(updatedProfile);
+        
+        const updatedProfilesList = profiles.map(p => 
+            p.id === updatedProfile.id ? updatedProfile : p
+        );
+        setProfiles(updatedProfilesList);
+        localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
+    }
   };
 
-  // Auto-guardado al cerrar
+  // Auto-guardado
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (currentProfile) {
@@ -115,34 +129,53 @@ function App() {
   const handleGoToContinue = () => { setIsCreatingMode(false); navigateTo('profile_selection'); };
   
   const handleOpenTrainerCard = () => {
+    // 1. Si ya tenemos un perfil cargado (ej: acabamos de crearlo), úsalo directo.
+    if (currentProfile) {
+        navigateTo('trainer_card');
+        return;
+    }
+
+    // 2. Si no (ej: venimos desde el menú principal sin seleccionar), búscalo.
     if (profiles.length > 0) {
       const lastActiveId = localStorage.getItem('lastActiveProfileId');
       let targetProfile = profiles.find(p => p.id == lastActiveId) || profiles[profiles.length - 1];
       
-      // Cargar datos específicos
       const savedDataStr = localStorage.getItem(`save_file_${targetProfile.id}`);
       const savedData = savedDataStr ? JSON.parse(savedDataStr) : {};
       
       setCurrentProfile(targetProfile);
-      setCurrentSaveData(savedData); // Actualizamos estado
-      localStorage.setItem('pokemonQuizSaveData', JSON.stringify(savedData)); // Actualizamos LS global para el quiz
+      setCurrentSaveData(savedData);
+      localStorage.setItem('pokemonQuizSaveData', JSON.stringify(savedData));
       
       navigateTo('trainer_card');
     }
   };
 
-  // --- GESTIÓN DE PERFILES (CORREGIDO) ---
+  // --- GESTIÓN DE PERFILES ---
   const handleCreateProfile = (profileName, skinId) => {
     if (profiles.length >= 8) return;
-    const newProfile = { id: Date.now(), name: profileName, skin: skinId, startDate: Date.now(), companion: null, playTime: 0, gymProgress: 0, eliteProgress: 0, gymUnlocked: false };
+    
+    // CORRECCIÓN: Inicializamos 'team' como array vacío
+    const newProfile = { 
+        id: Date.now(), 
+        name: profileName, 
+        skin: skinId, 
+        startDate: Date.now(), 
+        companion: null, 
+        playTime: 0, 
+        gymProgress: 0, 
+        eliteProgress: 0, 
+        gymUnlocked: false,
+        team: [] // <--- ESTO FALTABA
+    };
+
     const updatedProfiles = [...profiles, newProfile];
     
     setProfiles(updatedProfiles);
     localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfiles));
     
-    // Resetear datos para el nuevo usuario
     localStorage.setItem('pokemonQuizSaveData', '{}');
-    setCurrentSaveData({}); // Estado limpio
+    setCurrentSaveData({});
     
     setCurrentProfile(newProfile);
     localStorage.setItem('lastActiveProfileId', newProfile.id);
@@ -158,36 +191,30 @@ function App() {
 
   const handleSelectProfile = (profile) => {
     if (isCreatingMode) {
-      // REINICIAR PERFIL
       if (window.confirm(`¿Reiniciar aventura de ${profile.name}?`)) {
-        const resetProfile = { ...profile, playTime: 0, startDate: Date.now(), companion: null, gymProgress: 0, gymUnlocked: false };
+        // CORRECCIÓN: Al reiniciar también reseteamos el team
+        const resetProfile = { ...profile, playTime: 0, startDate: Date.now(), companion: null, gymProgress: 0, gymUnlocked: false, team: [] };
         const updatedProfiles = profiles.map(p => p.id === profile.id ? resetProfile : p);
         
         setProfiles(updatedProfiles);
         localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfiles));
         localStorage.removeItem(`save_file_${profile.id}`);
         
-        // Limpiar datos
         localStorage.setItem('pokemonQuizSaveData', '{}');
-        setCurrentSaveData({}); // Estado limpio
+        setCurrentSaveData({}); 
 
         setCurrentProfile(resetProfile);
         localStorage.setItem('lastActiveProfileId', resetProfile.id);
         navigateTo('game_mode_selection');
       }
     } else {
-      // CARGAR PERFIL EXISTENTE
       setCurrentProfile(profile);
       localStorage.setItem('lastActiveProfileId', profile.id);
       
-      // Cargar sus datos de captura específicos
       const specificSaveDataStr = localStorage.getItem(`save_file_${profile.id}`);
       const specificSaveData = specificSaveDataStr ? JSON.parse(specificSaveDataStr) : {};
       
-      // 1. Ponerlos en el LocalStorage "Activo" para que el Quiz lo lea
       localStorage.setItem('pokemonQuizSaveData', JSON.stringify(specificSaveData));
-      
-      // 2. Ponerlos en el ESTADO de React para que el Menú lo lea
       setCurrentSaveData(specificSaveData); 
       
       navigateTo('game_mode_selection');
@@ -198,9 +225,7 @@ function App() {
     if (currentProfile) {
       const currentProgress = localStorage.getItem('pokemonQuizSaveData');
       if (currentProgress) {
-          // Guardamos el progreso actual en el archivo del perfil
           localStorage.setItem(`save_file_${currentProfile.id}`, currentProgress);
-          // Actualizamos el estado local por si volvemos a entrar sin recargar
           setCurrentSaveData(JSON.parse(currentProgress));
       }
       updateProfilePlayTime(); 
@@ -216,15 +241,18 @@ function App() {
           <UnlockModal onClose={() => setShowUnlockModal(false)} />
        )}
 
+       {/* NUEVO MODAL ROCKET */}
+       {showRocketUnlockModal && (
+          <UnlockRocketModal onClose={() => setShowRocketUnlockModal(false)} />
+       )}
+
        <div className={`screen ${activeView === "menu" ? "visible" : "hidden"}`}><MainMenu onNewGame={handleGoToNewGame} onContinueGame={handleGoToContinue} onOpenTrainerCard={handleOpenTrainerCard} hasSaveData={hasSaveData} /></div>
        
        <div className={`screen ${activeView === "game_mode_selection" ? "visible" : "hidden"}`}>
         {currentProfile && (
             <GameModeSelection 
-                // Usamos currentProfile.id como key para forzar re-render al cambiar usuario
                 key={currentProfile.id} 
                 profile={currentProfile}
-                // Usamos el ESTADO en lugar de leer localStorage directamente
                 capturedData={currentSaveData}
                 onStartMode={(mode) => { if (mode === 'pokedex_difficulty_select') navigateTo('pokedex_difficulty'); else startGame(mode); }}
                 onBack={() => navigateTo('profile_selection')}
@@ -235,14 +263,72 @@ function App() {
 
       <div className={`screen ${activeView === "pokedex_difficulty" ? "visible" : "hidden"}`}>
         <PokedexModeSelection 
-            // Pasamos los datos correctos del estado
             capturedData={currentSaveData}
             onBack={() => navigateTo('game_mode_selection')} 
             onSelectMode={(difficulty) => { if (difficulty === 'hard') startGame('pokedex_hard'); else startGame('pokedex'); }} 
         />
       </div>
       
-      <div className={`screen ${activeView === "gym_map" ? "visible" : "hidden"}`}>{currentProfile && (<GymSelection profile={currentProfile} capturedData={currentSaveData} onBack={() => navigateTo('game_mode_selection')} onEnterGym={(gymId) => { console.log("Gym:", gymId); }} />)}</div>
+      <div className={`screen ${activeView === "gym_map" ? "visible" : "hidden"}`}>
+        {currentProfile && (
+          <GymSelection 
+            key={currentProfile.id}
+            profile={currentProfile} 
+            capturedData={currentSaveData} 
+            onBack={() => navigateTo('game_mode_selection')} 
+            
+            onEnterGym={(gymId) => { 
+                // --- VALIDACIÓN DE EQUIPO ---
+                const userTeam = currentProfile.team || [];
+
+                // Verificamos que tenga al menos 3 Pokémon (necesarios para la Fase 2: Estadio)
+                if (userTeam.length < 3) {
+                   alert("⚠️ ACCESO DENEGADO AL GIMNASIO\n\nNo puedes desafiar al Líder sin un equipo preparado.\n\nPor favor, ve a tu 'Ficha de Entrenador' y selecciona al menos 3 Pokémon en 'MI EQUIPO'.");
+                   return; // Detiene la entrada al gimnasio
+                }
+                
+                // Si cumple la condición, entra
+                setSelectedGymId(gymId);
+                setActiveView('gym_battle'); 
+            }} 
+          />
+        )}
+      </div>
+
+      {/* --- VISTA: BATALLA DE GIMNASIO --- */}
+      <div className={`screen ${activeView === "gym_battle" ? "visible" : "hidden"}`}>
+        {currentProfile && selectedGymId && activeView === 'gym_battle' && (
+            <GymBattle 
+                gymId={selectedGymId}
+                // Pasamos el equipo, si es undefined pasamos array vacío
+                userName={currentProfile.name}
+                userTeam={currentProfile.team || []} 
+                
+                onVictory={() => {
+                    const currentProgress = currentProfile.gymProgress || 0;
+                    const newProgress = currentProgress + 1;
+                    
+                    const updatedProfile = { ...currentProfile, gymProgress: newProgress };
+                    handleUpdateProfile(updatedProfile); 
+                    
+                    alert(`¡Felicidades! Has obtenido la medalla.`);
+                    setSelectedGymId(null);
+                    setActiveView('gym_map');
+                }}
+                
+                onDefeat={() => {
+                    alert("Has sido derrotado. ¡Entrena más y vuelve a intentarlo!");
+                    setSelectedGymId(null);
+                    setActiveView('gym_map');
+                }}
+                
+                onExit={() => {
+                    setSelectedGymId(null);
+                    setActiveView('gym_map');
+                }}
+            />
+        )}
+      </div>
       
       <div className={`screen ${activeView === "profile_selection" ? "visible" : "hidden"}`}><ProfileSelection profiles={profiles} onSelectProfile={handleSelectProfile} onNavigateToCreation={() => navigateTo('character_creation')} onGoBack={() => navigateTo('menu')} onDeleteProfile={handleDeleteProfile} allowCreation={isCreatingMode} /></div>
       <div className={`screen ${activeView === "character_creation" ? "visible" : "hidden"}`}><CharacterCreation onProfileCreate={handleCreateProfile} onGoBack={() => navigateTo('profile_selection')} /></div>
@@ -252,8 +338,8 @@ function App() {
         {(activeView === 'pokedex' || activeView === 'loading') && selectedGameMode === 'pokedex' && (
             <PokemonQuiz 
                 key={gameId} 
+                initialCapturedData={currentSaveData}
                 onGoBack={() => { 
-                    // Al volver, aseguramos guardar y actualizar estado
                     if (currentProfile) { 
                         const currentProgress = localStorage.getItem('pokemonQuizSaveData'); 
                         if (currentProgress) {
@@ -273,6 +359,10 @@ function App() {
       <div className={`screen ${activeView === "trainer_card" ? "visible" : "hidden"}`}>
         {currentProfile && (
             <TrainerCard 
+                // --- CAMBIO CLAVE AQUÍ ---
+                // Esto fuerza a que el componente se reinicie si cambia el usuario
+                key={currentProfile.id} 
+                
                 profile={currentProfile} 
                 capturedData={currentSaveData} 
                 onGoBack={() => { setCurrentProfile(null); navigateTo('menu'); }} 

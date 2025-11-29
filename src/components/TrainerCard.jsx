@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { availableSkins } from './skins';
-import { POKEMON_DATA } from '../pokemonData';
+import { POKEMON_DATA } from '../pokemonData'; 
 import { Clock, Map, Wallet, BookOpen, RefreshCw, X, ArrowLeft, Star } from 'lucide-react';
 
-// CONFIGURACIÓN DE MEDALLAS
 const GYM_LEADERS = [
-  { id: 'brock', name: 'Brock', badge: 'Roca', img: '/assets/badges/roca.png', required: 5 },
-  { id: 'misty', name: 'Misty', badge: 'Cascada', img: '/assets/badges/cascada.png', required: 15 },
-  { id: 'surge', name: 'Lt. Surge', badge: 'Trueno', img: '/assets/badges/trueno.png', required: 30 },
-  { id: 'erika', name: 'Erika', badgeName: 'Arcoíris', img: '/assets/badges/arcoiris.png', required: 50 },
-  { id: 'koga', name: 'Koga', badge: 'Alma', img: '/assets/badges/alma.png', required: 70 },
-  { id: 'sabrina', name: 'Sabrina', badge: 'Pantano', img: '/assets/badges/pantano.png', required: 90 },
-  { id: 'blaine', name: 'Blaine', badge: 'Volcán', img: '/assets/badges/volcan.png', required: 110 },
-  { id: 'giovanni', name: 'Giovanni', badge: 'Tierra', img: '/assets/badges/tierra.png', required: 130 },
+  { id: 'brock', name: 'Brock', badge: 'Roca', img: '/assets/badges/roca.png', order: 1 },
+  { id: 'misty', name: 'Misty', badge: 'Cascada', img: '/assets/badges/cascada.png', order: 2 },
+  { id: 'surge', name: 'Lt. Surge', badge: 'Trueno', img: '/assets/badges/trueno.png', order: 3 },
+  { id: 'erika', name: 'Erika', badgeName: 'Arcoíris', img: '/assets/badges/arcoiris.png', order: 4 },
+  { id: 'koga', name: 'Koga', badge: 'Alma', img: '/assets/badges/alma.png', order: 5 },
+  { id: 'sabrina', name: 'Sabrina', badge: 'Pantano', img: '/assets/badges/pantano.png', order: 6 },
+  { id: 'blaine', name: 'Blaine', badge: 'Volcán', img: '/assets/badges/volcan.png', order: 7 },
+  { id: 'giovanni', name: 'Giovanni', badge: 'Tierra', img: '/assets/badges/tierra.png', order: 8 },
 ];
 
 const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
@@ -25,6 +24,9 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
   
   const safeCapturedData = capturedData || {};
   const capturedCount = Object.values(safeCapturedData).filter(status => status === true).length;
+  
+  const gymProgress = profile.gymProgress || 0;
+
   const money = 0; 
   const startDate = new Date(profile.startDate || Date.now()).toLocaleDateString();
 
@@ -85,7 +87,6 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/30 to-transparent"></div>
             <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_24%,rgba(6,182,212,0.05)_25%,rgba(6,182,212,0.05)_26%,transparent_27%,transparent_74%,rgba(6,182,212,0.05)_75%,rgba(6,182,212,0.05)_76%,transparent_77%,transparent),linear-gradient(90deg,transparent_24%,rgba(6,182,212,0.05)_25%,rgba(6,182,212,0.05)_26%,transparent_27%,transparent_74%,rgba(6,182,212,0.05)_75%,rgba(6,182,212,0.05)_76%,transparent_77%,transparent)] bg-[size:50px_50px]"></div>
             
-            {/* Gradiente de suelo fuerte para contraste */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/40 to-transparent z-10"></div>
             
             <img 
@@ -94,7 +95,6 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
                 className="h-[95%] w-auto object-contain object-bottom relative z-0 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]"
             />
 
-            {/* NOMBRE Y ID */}
             <div className="absolute bottom-10 left-8 z-20 flex flex-col items-start gap-1">
                 <h2 className="text-5xl font-black italic uppercase text-white drop-shadow-xl tracking-tighter leading-none">
                     {profile.name}
@@ -112,7 +112,6 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
         {/* --- LADO DERECHO: INTERFAZ --- */}
         <div className="w-7/12 h-full p-8 flex flex-col bg-slate-900/50">
             
-            {/* CABECERA Y TABS (Botón Actualizado) */}
             <div className="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
                 <div>
                     <h3 className="text-xs font-bold text-cyan-500 uppercase tracking-[0.2em] mb-1">
@@ -123,7 +122,6 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
                     </h1>
                 </div>
                 
-                {/* --- BOTÓN SUPERIOR ESTILO SCI-FI --- */}
                 <button 
                     onClick={() => setActiveView(activeView === 'info' ? 'team' : 'info')}
                     className="group flex items-center gap-3 px-6 py-2.5 bg-slate-800/50 hover:bg-cyan-900/20 border-r-4 border-cyan-500 rounded-tl-xl rounded-bl-sm transition-all duration-300 hover:skew-x-[-10deg] shadow-lg"
@@ -153,23 +151,33 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
                         
                         <div className="flex-1 bg-black/20 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
                             <div className="grid grid-cols-4 grid-rows-2 gap-3 h-full w-full">
-                                {GYM_LEADERS.map((leader) => (
-                                    <div key={leader.id} className="relative w-full h-full bg-slate-800/80 rounded-lg overflow-hidden border border-slate-700 group">
-                                        <img src={`/assets/gym_leaders/${leader.id}.png`} alt={leader.name} className="w-full h-full object-cover grayscale opacity-10" />
-                                        
-                                        <div className="absolute bottom-0 right-0 w-9 h-9 bg-[#0f172a] rounded-tl-lg border-t border-l border-slate-600 flex items-center justify-center">
-                                             {capturedCount >= leader.required ? (
-                                                 <img src={leader.img} alt={leader.badge} className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] animate-pulse-slow" />
-                                             ) : (
-                                                 <div className="w-5 h-5 rounded-full border-2 border-dashed border-slate-700 opacity-30"></div>
-                                             )}
-                                        </div>
+                                {GYM_LEADERS.map((leader) => {
+                                    // Comprobamos si el líder está desbloqueado para colorear la imagen
+                                    const isUnlocked = gymProgress >= leader.order;
+                                    
+                                    return (
+                                        <div key={leader.id} className="relative w-full h-full bg-slate-800/80 rounded-lg overflow-hidden border border-slate-700 group">
+                                            {/* CAMBIO AQUÍ: Clase dinámica según progreso */}
+                                            <img 
+                                                src={`/assets/gym_leaders/${leader.id}.png`} 
+                                                alt={leader.name} 
+                                                className={`w-full h-full object-cover transition-all duration-500 ${isUnlocked ? 'grayscale-0 opacity-100' : 'grayscale opacity-10'}`} 
+                                            />
+                                            
+                                            <div className="absolute bottom-0 right-0 w-9 h-9 bg-[#0f172a] rounded-tl-lg border-t border-l border-slate-600 flex items-center justify-center">
+                                                 {isUnlocked ? (
+                                                     <img src={leader.img} alt={leader.badge} className="w-6 h-6 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] animate-pulse-slow" />
+                                                 ) : (
+                                                     <div className="w-5 h-5 rounded-full border-2 border-dashed border-slate-700 opacity-30"></div>
+                                                 )}
+                                            </div>
 
-                                        <div className="absolute top-1 left-2 text-[10px] font-bold text-slate-500 group-hover:text-slate-300 uppercase tracking-wider transition-colors">
-                                            {leader.name}
+                                            <div className="absolute top-1 left-2 text-[10px] font-bold text-slate-500 group-hover:text-slate-300 uppercase tracking-wider transition-colors">
+                                                {leader.name}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -231,7 +239,7 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
                 </div>
             )}
 
-            {/* --- FOOTER (Botón Cerrar Actualizado) --- */}
+            {/* --- FOOTER --- */}
             <div className="h-16 mt-auto pt-6 flex-shrink-0 border-t border-slate-700/50">
                 <button 
                     onClick={onGoBack} 
@@ -246,7 +254,7 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
         </div>
       </div>
 
-      {/* MODAL SELECTOR (Intacto) */}
+      {/* MODAL SELECTOR */}
       {showSelector && (
         <div className="absolute inset-0 bg-black/80 z-[60] flex items-center justify-center p-6 backdrop-blur-sm animate-fade-in">
             <div className="bg-[#0f172a] rounded-2xl w-full max-w-5xl h-[85%] border border-slate-600 flex flex-col overflow-hidden shadow-2xl relative">
@@ -267,7 +275,7 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
                         </button>
                     </div>
                 </div>
-                {/* ... resto del modal ... */}
+                
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-900/50">
                     {myPokemonList.length > 0 ? (
                         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">

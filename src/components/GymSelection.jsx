@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Lock, MapPin, Swords, Play, X, Check, AlertTriangle } from 'lucide-react';
-import { GYM_NODES } from './gymData';
+import { GYM_DATA } from "../data/gymsData";
 import { availableSkins } from './skins';
 
 const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
@@ -37,7 +37,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
   // --- 2. EFECTO INICIAL ---
   useEffect(() => {
     if (!travelNodeId) {
-        const startNode = GYM_NODES[Math.min(currentProgress, GYM_NODES.length - 1)];
+        const startNode = GYM_DATA[Math.min(currentProgress, GYM_DATA.length - 1)];
         setTravelNodeId(startNode.id);
         setSelectedNode(startNode);
     }
@@ -58,7 +58,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
     }
 
     // B. LÓGICA GIMNASIOS
-    const nodeIndex = GYM_NODES.findIndex(n => n.id === node.id);
+    const nodeIndex = GYM_DATA.findIndex(n => n.id === node.id);
     
     // 1. ¿Ya ganaste este gimnasio?
     const isPassed = currentProgress >= nodeIndex; 
@@ -94,7 +94,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
       }
   };
 
-  const currentNodeObj = GYM_NODES.find(n => n.id === travelNodeId) || GYM_NODES[0];
+  const currentNodeObj = GYM_DATA.find(n => n.id === travelNodeId) || GYM_DATA[0];
   const selectedStatus = selectedNode ? checkUnlockStatus(selectedNode) : null;
 
   return (
@@ -131,8 +131,9 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                         {selectedNode.isGym ? (
                             <>
                                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent z-10"></div>
+                                {/* CAMBIO AQUÍ: Usamos leaderPortrait si existe, si no, leaderImg */}
                                 <img 
-                                    src={selectedNode.leaderImg} 
+                                    src={selectedNode.leaderPortrait || selectedNode.leaderImg} 
                                     alt={selectedNode.leader} 
                                     className={`absolute right-0 top-0 w-auto h-full object-cover object-top transition-all duration-500 ${selectedStatus.canEnter ? 'grayscale-0' : 'grayscale brightness-50'}`}
                                 />
@@ -256,7 +257,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
             </div>
 
             {/* NODOS */}
-            {GYM_NODES.map((node) => {
+            {GYM_DATA.map((node) => {
                 const status = checkUnlockStatus(node);
                 const isSelected = selectedNode?.id === node.id;
 

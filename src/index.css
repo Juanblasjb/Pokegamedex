@@ -130,3 +130,147 @@
     0% { background-position: 0 0; }
     100% { background-position: 20px 20px; }
   }
+
+/* --- EFECTOS DE ESCÁNER Y EVOLUCIÓN --- */
+
+/* 1. Haz de luz del escáner (Vertical) */
+@keyframes scan-beam {
+  0% { 
+    top: 2%; /* Empieza un poco adentro para no cortar el borde superior */
+    opacity: 0; 
+  }
+  15% { 
+    opacity: 1; 
+  }
+  85% { 
+    opacity: 1; 
+  }
+  100% { 
+    top: 95%; /* Se detiene ANTES de llegar al fondo absoluto para no chocar con el texto */
+    opacity: 0; 
+  }
+}
+
+.animate-scan-beam {
+  /* Aumentado a 4s para ser más lento y elegante */
+  animation: scan-beam 2.5s ease-in-out infinite; 
+  background: linear-gradient(
+    to bottom, 
+    transparent, 
+    rgba(34, 211, 238, 0.4) 40%, 
+    rgba(34, 211, 238, 0.9) 50%, 
+    rgba(34, 211, 238, 0.4) 60%, 
+    transparent
+  );
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.8);
+}
+
+/* 2. Grid Holográfico */
+.scan-grid-overlay {
+  background-image: 
+    linear-gradient(rgba(6, 182, 212, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.3) 1px, transparent 1px);
+  background-size: 30px 30px;
+  /* Máscara radial más cerrada para que los bordes se desvanezcan antes */
+  mask-image: radial-gradient(circle, black 40%, transparent 85%);
+}
+
+/* 3. FASE 1: Silueta negra -> Luz Blanca Brillante (Durante el escaneo) */
+@keyframes evolution-build {
+  0% { 
+    filter: brightness(0) invert(0) opacity(0.5); 
+    transform: scale(1);
+  }
+  30% {
+    filter: brightness(0) invert(0) opacity(0.8);
+  }
+  100% { 
+    /* Blanco puro */
+    filter: brightness(0) invert(1) opacity(1) drop-shadow(0 0 30px rgba(255, 255, 255, 1)); 
+    transform: scale(1.05); /* Zoom más sutil */
+  }
+}
+.animate-evolution-in {
+  /* Sincronizado con la duración del escaneo (JS timer) */
+  animation: evolution-build 2.5s ease-in forwards; 
+}
+
+/* 4. FASE 2: Luz Blanca -> Color Real (Al terminar escaneo) */
+@keyframes evolution-reveal {
+  0% { 
+    filter: brightness(100) grayscale(100%) drop-shadow(0 0 30px rgba(255, 255, 255, 1));
+    transform: scale(1.05);
+  }
+  100% { 
+    filter: brightness(1) grayscale(0%) drop-shadow(0 0 0 transparent);
+    transform: scale(1);
+  }
+}
+.animate-evolution-out {
+  animation: evolution-reveal 1.5s ease-out forwards;
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in-left {
+  animation: slide-in-left 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes glitch-text {
+  0% { text-shadow: 2px 0 rgba(255,0,0,0.5), -2px 0 rgba(0,255,255,0.5); }
+  2% { text-shadow: -2px 0 rgba(255,0,0,0.5), 2px 0 rgba(0,255,255,0.5); }
+  4% { text-shadow: 2px 0 rgba(255,0,0,0.5), -2px 0 rgba(0,255,255,0.5); }
+  6% { text-shadow: none; }
+  100% { text-shadow: none; }
+}
+.animate-glitch {
+  animation: glitch-text 3s infinite linear;
+}
+
+/* --- EFECTOS BOSS FIGHT --- */
+
+@keyframes hazard-scroll {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+.animate-hazard {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(220, 38, 38, 0.1),
+    rgba(220, 38, 38, 0.1) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  background-size: 28px 28px;
+  animation: hazard-scroll 2s linear infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes text-stroke-pulse {
+  0%, 100% { -webkit-text-stroke: 2px rgba(220, 38, 38, 0.3); }
+  50% { -webkit-text-stroke: 2px rgba(220, 38, 38, 0.8); }
+}
+.text-outline-red {
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(220, 38, 38, 0.5);
+  animation: text-stroke-pulse 3s infinite;
+}
+

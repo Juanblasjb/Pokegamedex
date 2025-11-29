@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { X, Award, ArrowLeft, Filter, Search, BarChart2, Move } from 'lucide-react';
 import ShinyAnimation from './ShinyAnimation';
 import { POKEMON_DATA } from './pokemonData';
 import { TYPES, TYPE_ICONS, RARITY_CAPTURE_RATES, RARITY_STARS } from './constants';
-import SpecialEventModal from './components/SpecialEventModal'; // <--- IMPORTACIÓN NUEVA
+import SpecialEventModal from './components/SpecialEventModal';
+import { POKEMON_LIST } from './pokemonList';
 
 // -----------------------------------------------------------------------------
 // 1. COMPONENTE: TARJETA DE POKEMON
@@ -73,7 +74,7 @@ const PokemonCard = React.memo(({ pokemon, status, onClick }) => {
 // -----------------------------------------------------------------------------
 // 2. COMPONENTE: BOTÓN DE RESPUESTA
 // -----------------------------------------------------------------------------
-const QuizOption = React.memo(({ option, index, selectedAnswerIndex, isTransitioning, correctIndex, onAnswer }) => {
+    const QuizOption = React.memo(({ option, index, selectedAnswerIndex, isTransitioning, correctIndex, onAnswer }) => {
     const isSelected = selectedAnswerIndex === index;
     const isCorrect = correctIndex === index;
 
@@ -99,73 +100,109 @@ const QuizOption = React.memo(({ option, index, selectedAnswerIndex, isTransitio
 });
 
 // -----------------------------------------------------------------------------
-// 3. COMPONENTE: MODAL PRINCIPAL
+// 3. COMPONENTE: MODAL PRINCIPAL (Corregido: Animación solo al capturar)
 // -----------------------------------------------------------------------------
 const QuizModal = React.memo(({ 
   selectedPokemon, capturedStatus, isShiny, playShinyAnim, 
   handleShinyToggle, closeModal, quizMode, showResult, 
   activeTab, setActiveTab, currentQuestion, quizQuestions, 
   selectedAnswerIndex, isTransitioning, handleAnswer, score, captureAttempt,
-  inBonusRound
+  inBonusRound, isScanning 
 }) => {
     
   if (!selectedPokemon) return null;
+
+  const showFullColor = (capturedStatus === true || capturedStatus === 'unlocked') && !isScanning;
+  
+  // --- LÓGICA DE TRANSICIÓN ---
+  // Usamos un estado local para saber si debemos ejecutar la animación de "salida" (Reveal)
+  const [triggerReveal, setTriggerReveal] = useState(false);
+  
+  // Guardamos el valor anterior de isScanning para detectar el cambio
+  const prevScanningRef = useRef(isScanning);
+
+  useEffect(() => {
+      // Si antes estábamos escaneando (true) y ahora paramos (false)...
+      if (prevScanningRef.current === true && isScanning === false) {
+          // ...significa que acabamos de capturar. Activamos la animación.
+          setTriggerReveal(true);
+      }
+      // Actualizamos la referencia
+      prevScanningRef.current = isScanning;
+  }, [isScanning]);
+
+  // Calculamos la clase de animación
+  let imageAnimationClass = "animate-float"; // Estado normal (flotando suave)
+  
+  if (isScanning) {
+      // FASE 1: Mientras escanea (Negro a Blanco)
+      imageAnimationClass = "animate-evolution-in"; 
+  } else if (triggerReveal) {
+      // FASE 2: Justo al terminar de escanear (Blanco a Color)
+      imageAnimationClass = "animate-evolution-out";
+  }
+  // Si no estamos escaneando y no se disparó el reveal (es decir, abrimos uno ya capturado),
+  // se queda con "animate-float" por defecto.
 
   return (
     <div className="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-6 backdrop-blur-sm animate-fade-in">
         <div className={`bg-[#0f172a] rounded-2xl w-full max-w-5xl h-auto min-h-[600px] max-h-[95vh] border flex overflow-hidden shadow-2xl relative transition-colors duration-300 ${inBonusRound ? 'border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.2)]' : 'border-slate-600'}`}>
             
             <div className="flex w-full">
-                {/* IZQUIERDA */}
-                <div className="w-5/12 bg-slate-900/50 border-r border-slate-700 relative flex flex-col items-center justify-center p-8">
+                {/* IZQUIERDA - VISUALIZADOR */}
+                <div className="w-5/12 bg-slate-900/50 border-r border-slate-700 relative flex flex-col items-center justify-center p-8 overflow-hidden">
                     <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_24%,rgba(6,182,212,0.05)_25%,rgba(6,182,212,0.05)_26%,transparent_27%,transparent_74%,rgba(6,182,212,0.05)_75%,rgba(6,182,212,0.05)_76%,transparent_77%,transparent),linear-gradient(90deg,transparent_24%,rgba(6,182,212,0.05)_25%,rgba(6,182,212,0.05)_26%,transparent_27%,transparent_74%,rgba(6,182,212,0.05)_75%,rgba(6,182,212,0.05)_76%,transparent_77%,transparent)] bg-[size:40px_40px]"></div>
                     
-                    {(capturedStatus === true || capturedStatus === 'unlocked') && (
-                        <div className="absolute top-6 left-6 z-30 flex gap-3">
-                            <button 
-                                onClick={() => handleShinyToggle(false)} 
-                                className={`w-10 h-10 rounded-lg font-black text-sm flex items-center justify-center transition-colors shadow-lg border-2 ${!isShiny ? 'bg-slate-700 border-slate-500 text-slate-300' : 'bg-slate-900/50 border-slate-700 text-slate-500 hover:text-white hover:border-slate-500'}`}
-                                title="Ver Normal"
-                            >
-                                N
-                            </button>
-
-                            <button 
-                                onClick={() => handleShinyToggle(true)} 
-                                className={`w-10 h-10 rounded-lg font-black text-sm flex items-center justify-center transition-colors shadow-lg border-2 ${isShiny ? 'bg-yellow-500 border-yellow-300 text-yellow-900 shadow-[0_0_15px_rgba(234,179,8,0.5)]' : 'bg-slate-900/50 border-slate-700 text-slate-500 hover:text-yellow-400 hover:border-yellow-600'}`}
-                                title="Ver Shiny"
-                            >
-                                S
-                            </button>
+                    {/* BOTONES SHINY */}
+                    {showFullColor && (
+                        <div className="absolute top-6 left-6 z-30 flex gap-3 animate-fade-in">
+                            <button onClick={() => handleShinyToggle(false)} className={`w-10 h-10 rounded-lg font-black text-sm flex items-center justify-center transition-colors shadow-lg border-2 ${!isShiny ? 'bg-slate-700 border-slate-500 text-slate-300' : 'bg-slate-900/50 border-slate-700 text-slate-500 hover:text-white hover:border-slate-500'}`} title="Ver Normal">N</button>
+                            <button onClick={() => handleShinyToggle(true)} className={`w-10 h-10 rounded-lg font-black text-sm flex items-center justify-center transition-colors shadow-lg border-2 ${isShiny ? 'bg-yellow-500 border-yellow-300 text-yellow-900 shadow-[0_0_15px_rgba(234,179,8,0.5)]' : 'bg-slate-900/50 border-slate-700 text-slate-500 hover:text-yellow-400 hover:border-yellow-600'}`} title="Ver Shiny">S</button>
                         </div>
                     )}
 
-                    <div className="relative w-[80%] aspect-square flex items-center justify-center z-10">
+                    <div className="relative w-[70%] aspect-square flex items-center justify-center z-10 mt-2"> 
                         {playShinyAnim && <ShinyAnimation />}
 
                         <img 
                             src={
-                            (capturedStatus === true || capturedStatus === 'unlocked') 
-                        ? (isShiny 
-                        ? `/assets/pokemon/shiny/${selectedPokemon.id}.png` 
-                        : `/assets/pokemon/normal/${selectedPokemon.id}.png`)
-                        : `/assets/Pokedex_silueta/${selectedPokemon.id}.png`
-                        }
-                        alt={selectedPokemon.name} 
-                        className={`
-                        w-full h-full object-contain z-10 animate-float
-                        ${(capturedStatus === true || capturedStatus === 'unlocked') ? 'drop-shadow-2xl' : 'opacity-50 brightness-0 invert'} 
-                        `}
+                                showFullColor
+                                    ? (isShiny ? `/assets/pokemon/shiny/${selectedPokemon.id}.png` : `/assets/pokemon/normal/${selectedPokemon.id}.png`)
+                                    : `/assets/Pokedex_silueta/${selectedPokemon.id}.png` 
+                            }
+                            alt={selectedPokemon.name} 
+                            className={`
+                                w-full h-full object-contain z-10 
+                                ${imageAnimationClass}
+                                ${!showFullColor && !isScanning ? 'opacity-50 brightness-0 invert' : ''} 
+                            `}
                         />
+                        
+                        {/* --- CAPA DE ESCANEO --- */}
+                        {isScanning && (
+                            <div className="absolute inset-[-15%] z-20 pointer-events-none">
+                                <div className="absolute left-0 right-0 h-[3px] bg-cyan-400 shadow-[0_0_25px_rgba(34,211,238,1)] animate-scan-beam"></div>
+                                <div className="absolute inset-0 scan-grid-overlay opacity-40 animate-pulse"></div>
+                                <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-400 drop-shadow-[0_0_5px_cyan]"></div>
+                                <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-400 drop-shadow-[0_0_5px_cyan]"></div>
+                                <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-400 drop-shadow-[0_0_5px_cyan]"></div>
+                                <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-400 drop-shadow-[0_0_5px_cyan]"></div>
+                                <div className="absolute bottom-2 left-0 right-0 text-center">
+                                    <span className="bg-black/90 px-3 py-1 rounded text-[8px] font-mono font-bold text-cyan-400 border border-cyan-500/50 animate-pulse tracking-widest shadow-lg backdrop-blur-sm">
+                                        SYNCING DNA...
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="mt-4 text-center z-10">
-                        <h2 className={`text-4xl font-black italic uppercase tracking-tighter mb-1 ${inBonusRound ? 'text-yellow-400 animate-pulse' : 'text-white'}`}>
-                            {(capturedStatus === true || capturedStatus === 'unlocked') ? selectedPokemon.name : '???'}
+                    <div className="mt-12 text-center z-10 relative w-full"> 
+                        <h2 className={`text-4xl font-black italic uppercase tracking-tighter mb-2 transition-all duration-300 ${inBonusRound ? 'text-yellow-400 animate-pulse' : 'text-white'}`}>
+                            {showFullColor ? selectedPokemon.name : '???'}
                         </h2>
                         
-                        {(capturedStatus === true || capturedStatus === 'unlocked') && (
-                            <>
+                        {showFullColor ? (
+                            <div className="animate-fade-in-up">
                                 <div className="flex justify-center gap-2 mb-4">
                                     {selectedPokemon.type.map(t => (
                                         <span key={t} className="text-[10px] font-bold px-2 py-1 bg-slate-800 text-cyan-400 border border-slate-600 rounded uppercase tracking-wider">{t}</span>
@@ -176,28 +213,22 @@ const QuizModal = React.memo(({
                                         <div key={i} className={`w-2 h-2 rounded-full ${i < RARITY_STARS[selectedPokemon.rarity] ? 'bg-cyan-400' : 'bg-slate-700'}`}></div>
                                     ))}
                                 </div>
-                            </>
+                            </div>
+                        ) : (
+                             <div className="h-10"></div>
                         )}
                     </div>
                 </div>
 
-                {/* DERECHA */}
+                {/* DERECHA (SIN CAMBIOS) */}
                 <div className="w-7/12 bg-[#0f172a] p-8 flex flex-col">
-                    
-                    {/* TOOLBAR */}
                     <div className="flex justify-end items-center gap-3 mb-6 flex-shrink-0">
                         {!quizMode && !showResult && (
                             <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
-                                <button 
-                                    onClick={() => setActiveTab('Estadísticas')} 
-                                    className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${activeTab === 'Estadísticas' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
-                                >
+                                <button onClick={() => setActiveTab('Estadísticas')} className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${activeTab === 'Estadísticas' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}>
                                     <BarChart2 size={12} /> Estadísticas
                                 </button>
-                                <button 
-                                    onClick={() => setActiveTab('Movimientos')} 
-                                    className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${activeTab === 'Movimientos' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
-                                >
+                                <button onClick={() => setActiveTab('Movimientos')} className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${activeTab === 'Movimientos' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}>
                                     <Move size={12} /> Movimientos
                                 </button>
                             </div>
@@ -205,15 +236,14 @@ const QuizModal = React.memo(({
 
                         <button 
                             onClick={closeModal} 
-                            className="p-1.5 bg-red-900/20 hover:bg-red-900/50 border border-red-900/50 hover:border-red-500 text-red-400 hover:text-red-200 rounded-lg transition-colors"
-                            title="Cerrar"
+                            disabled={isScanning}
+                            className={`p-1.5 rounded-lg transition-colors border ${isScanning ? 'opacity-30 cursor-not-allowed bg-slate-800 border-slate-700 text-slate-500' : 'bg-red-900/20 hover:bg-red-900/50 border-red-900/50 hover:border-red-500 text-red-400 hover:text-red-200'}`}
                         >
                             <X size={20} />
                         </button>
                     </div>
                     
                     <div className="flex-1 overflow-y-auto no-scrollbar pr-2">
-                        
                         {/* MODO QUIZ */}
                         {quizMode && !showResult && (
                             <div className="flex flex-col justify-center min-h-full">
@@ -228,19 +258,14 @@ const QuizModal = React.memo(({
                                         <div className={`h-full transition-all duration-500 ${inBonusRound ? 'bg-yellow-500' : 'bg-cyan-500'}`} style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}></div>
                                     </div>
                                 </div>
-
                                 <h3 className="text-2xl font-bold text-white mb-8 leading-tight">{quizQuestions[currentQuestion]?.question}</h3>
-
                                 <div className="grid grid-cols-1 gap-4 pb-2">
                                     {quizQuestions[currentQuestion]?.options.map((option, idx) => (
                                         <QuizOption 
-                                            key={idx}
-                                            index={idx}
-                                            option={option}
+                                            key={idx} index={idx} option={option}
                                             selectedAnswerIndex={selectedAnswerIndex}
                                             correctIndex={quizQuestions[currentQuestion].correct}
-                                            isTransitioning={isTransitioning}
-                                            onAnswer={handleAnswer}
+                                            isTransitioning={isTransitioning} onAnswer={handleAnswer}
                                         />
                                     ))}
                                 </div>
@@ -262,12 +287,15 @@ const QuizModal = React.memo(({
                                     captureAttempt ? (
                                         <div className={`p-6 rounded-xl border ${captureAttempt.success ? 'bg-green-900/20 border-green-500' : 'bg-red-900/20 border-red-500'}`}>
                                             <h3 className={`text-xl font-bold mb-2 ${captureAttempt.success ? 'text-green-400' : 'text-red-400'}`}>
-                                                {captureAttempt.success ? '¡CAPTURA EXITOSA!' : '¡EL POKÉMON ESCAPÓ!'}
+                                                {isScanning ? 'PROCESANDO ADN...' : (captureAttempt.success ? '¡CAPTURA EXITOSA!' : '¡EL POKÉMON ESCAPÓ!')}
                                             </h3>
                                             <p className="text-sm text-slate-300">
-                                                {captureAttempt.success 
-                                                    ? `${selectedPokemon.name} ha sido registrado en la base de datos.` 
-                                                    : `Probabilidad de éxito fue del ${(captureAttempt.probability * 100).toFixed(0)}%. Inténtalo de nuevo.`}
+                                                {isScanning 
+                                                    ? "Desencriptando firma genética..." 
+                                                    : (captureAttempt.success 
+                                                        ? `${selectedPokemon.name} ha sido registrado en la base de datos.` 
+                                                        : `Probabilidad de éxito fue del ${(captureAttempt.probability * 100).toFixed(0)}%. Inténtalo de nuevo.`)
+                                                }
                                             </p>
                                         </div>
                                     ) : (
@@ -280,9 +308,11 @@ const QuizModal = React.memo(({
                                     </div>
                                 )}
                                 
-                                <button onClick={closeModal} className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-600 font-bold tracking-wider uppercase transition-colors">
-                                    Cerrar
-                                </button>
+                                {!isScanning && (
+                                    <button onClick={closeModal} className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg border border-slate-600 font-bold tracking-wider uppercase transition-colors">
+                                        Cerrar
+                                    </button>
+                                )}
                             </div>
                         )}
 
@@ -295,7 +325,6 @@ const QuizModal = React.memo(({
                                             <h4 className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mb-2">Descripción</h4>
                                             <p className="text-sm text-slate-300 leading-relaxed">{selectedPokemon.description}</p>
                                         </div>
-                                        
                                         <div className="grid grid-cols-2 gap-3">
                                             {Object.entries(selectedPokemon.stats).map(([key, value]) => (
                                                 <div key={key} className="flex justify-between items-center p-2 rounded bg-slate-800/30 border border-slate-700/50">
@@ -325,12 +354,12 @@ const QuizModal = React.memo(({
 });
 
 // -----------------------------------------------------------------------------
-// 4. COMPONENTE PRINCIPAL (ACTUALIZADO)
+// 4. COMPONENTE PRINCIPAL (ACTUALIZADO CON AUDIO Y ESCÁNER)
 // -----------------------------------------------------------------------------
-export default function PokemonQuiz({ onGoBack, onGameCapture }) {
+export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedData }) {
   const [captured, setCaptured] = useState(() => {
     const savedData = localStorage.getItem('pokemonQuizSaveData');
-    return savedData ? JSON.parse(savedData) : {};
+    return initialCapturedData || {};
   });
   const [selectedType, setSelectedType] = useState("Todos");
   const [selectedPokemon, setSelectedPokemon] = useState(null);
@@ -347,15 +376,17 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
   const [showSpecialEvent, setShowSpecialEvent] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
-  // --- CAMBIO 1: FILTRADO DE MEW ---
-  // Filtramos para que Mew (151) solo aparezca si está desbloqueado
+  // --- ESTADO Y REF PARA EL ESCANEO ---
+  const [isScanning, setIsScanning] = useState(false);
+
   const filteredPokemon = useMemo(() => {
-    const baseList = POKEMON_DATA.filter(p => {
+    const baseList = POKEMON_LIST.filter(p => {
         if (p.id === 151) {
             return captured[151] === true || captured[151] === 'unlocked';
         }
-        return true; // Muestra del 1 al 150 siempre
+        return true; 
     });
 
     return selectedType === "Todos"
@@ -370,18 +401,7 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
     localStorage.setItem('pokemonQuizSaveData', JSON.stringify(captured));
   }, [captured]);
 
-  // --- EFECTO DE BONUS ---
-  useEffect(() => {
-    if (inBonusRound && selectedPokemon && selectedPokemon.bonusQuestion) {
-        const bonusQ = shuffleOptions(selectedPokemon.bonusQuestion);
-        setQuizQuestions(prev => [...prev, bonusQ]);
-        setTimeout(() => {
-            setCurrentQuestion(prev => prev + 1);
-            setIsTransitioning(false);
-        }, 100);
-    }
-  }, [inBonusRound, selectedPokemon]);
-
+  // --- LOGICA DE PREGUNTAS (RESTAURADA) ---
   const selectRandomQuestions = (allQuestions) => {
     const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 15);
@@ -394,25 +414,62 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
     const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
     return { ...question, options: shuffledOptions, correct: newCorrectIndex };
   };
+
+  useEffect(() => {
+    if (inBonusRound && selectedPokemon && selectedPokemon.bonusQuestion) {
+        const bonusQ = shuffleOptions(selectedPokemon.bonusQuestion);
+        setQuizQuestions(prev => [...prev, bonusQ]);
+        setTimeout(() => {
+            setCurrentQuestion(prev => prev + 1);
+            setIsTransitioning(false);
+        }, 100);
+    }
+  }, [inBonusRound, selectedPokemon]);
   
-  const handlePokemonClick = useCallback((pokemon) => {
-    if (captured[pokemon.id] === true) {
-      setSelectedPokemon(pokemon);
-      setActiveTab('Estadísticas');
-      setIsShiny(false);
-    } else {
-      setSelectedPokemon(pokemon);
-      setQuizMode(true);
-      setCurrentQuestion(0);
-      setScore(0);
-      setShowResult(false);
-      setCaptureAttempt(null);
-      setInBonusRound(false);
-      const randomQuestions = selectRandomQuestions(pokemon.quiz);
-      const questionsWithShuffledOptions = randomQuestions.map(q => shuffleOptions(q));
-      setQuizQuestions(questionsWithShuffledOptions);
-      setIsTransitioning(false);
-      setSelectedAnswerIndex(null);
+  const handlePokemonClick = useCallback(async (pokemonLite) => {
+    // Si ya lo tenemos capturado, no necesitamos preguntas, pero sí stats/descripción
+    // que también están en el archivo pesado. Así que cargamos siempre.
+    
+    setIsLoadingDetails(true); // Podrías poner un spinner pequeño en la tarjeta si quieres
+
+    try {
+        // AQUÍ OCURRE LA MAGIA: El navegador descarga el archivo de 12k líneas AHORA, no antes.
+        // Webpack/Vite separará esto en un "chunk" separado.
+        const module = await import('./pokemonData'); 
+        const fullData = module.POKEMON_DATA.find(p => p.id === pokemonLite.id);
+
+        if (!fullData) {
+            console.error("Error: Datos no encontrados para", pokemonLite.name);
+            setIsLoadingDetails(false);
+            return;
+        }
+
+        if (captured[pokemonLite.id] === true) {
+            setSelectedPokemon(fullData);
+            setActiveTab('Estadísticas');
+            setIsShiny(false);
+        } else {
+            setSelectedPokemon(fullData);
+            setQuizMode(true);
+            setCurrentQuestion(0);
+            setScore(0);
+            setShowResult(false);
+            setCaptureAttempt(null);
+            setInBonusRound(false);
+            
+            // Lógica de preguntas con los datos recién cargados
+            const randomQuestions = selectRandomQuestions(fullData.quiz);
+            const questionsWithShuffledOptions = randomQuestions.map(q => shuffleOptions(q));
+            setQuizQuestions(questionsWithShuffledOptions);
+            
+            setIsTransitioning(false);
+            setSelectedAnswerIndex(null);
+            setIsScanning(false);
+        }
+    } catch (error) {
+        console.error("Error cargando los datos del Pokémon:", error);
+    } finally {
+        setIsLoadingDetails(false);
     }
   }, [captured]);
 
@@ -427,7 +484,7 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
     }
   }, []);
 
-  // --- CAMBIO 2: LÓGICA DE CAPTURA + NOTIFICACIÓN ---
+  // --- LÓGICA DE CAPTURA ACTUALIZADA ---
   const attemptCapture = (finalScore) => {
     let success = false;
     let probability = 0;
@@ -437,41 +494,52 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
       probability = 1.0;
     } else {
       const baseCaptureRate = RARITY_CAPTURE_RATES[selectedPokemon.rarity];
-      const random = Math.random();
-      success = random < baseCaptureRate;
+      success = Math.random() < baseCaptureRate;
       probability = baseCaptureRate;
     }
     
     setCaptureAttempt({ success, probability });
 
     if (success) {
-      // Guardado en estado
-      const newCapturedState = { ...captured, [selectedPokemon.id]: true };
-      setCaptured(newCapturedState);
-      
-      // GUARDADO SÍNCRONO EN DISCO (Crucial para que App.jsx lea lo correcto)
-      localStorage.setItem('pokemonQuizSaveData', JSON.stringify(newCapturedState));
-      
-      const trulyCapturedCount = Object.values(newCapturedState).filter(status => status === true).length;
-      
-      // NOTIFICACIÓN AL PADRE (Mensaje de 5 Pokémon)
-      if (onGameCapture) {
-          onGameCapture(trulyCapturedCount);
-      }
+      // 1. INICIAR ESCANEO VISUAL
+      setIsScanning(true);
 
-      // NOTIFICACIÓN DE MEW (Mensaje de 150 Pokémon)
-      // Si tenemos 150 o más y Mew (151) no existe en la lista...
-      if (trulyCapturedCount >= 150 && !newCapturedState[151]) {
-        setTimeout(() => {
-          setShowSpecialEvent(true); 
-        }, 2000);
-      }
+      // 2. REPRODUCIR SONIDO (SOLUCIÓN DEFINITIVA)
+      // Creamos una instancia nueva cada vez. Esto evita conflictos de estado.
+      const sfx = new Audio('/assets/sounds/scan_sfx.mp3');
+      sfx.volume = 1.0;
+      sfx.play().catch(err => {
+          // Este log te ayudará a saber si es el navegador bloqueándolo
+          console.warn("El navegador bloqueó el sonido o no encontró el archivo:", err);
+      });
+
+      // 3. PRE-CARGAR IMAGEN A COLOR
+      const img = new Image();
+      img.src = `/assets/pokemon/normal/${selectedPokemon.id}.png`;
+
+      // 4. ESPERAR ANIMACIÓN (2.5 segundos)
+      setTimeout(() => {
+          const newCapturedState = { ...captured, [selectedPokemon.id]: true };
+          setCaptured(newCapturedState);
+          
+          localStorage.setItem('pokemonQuizSaveData', JSON.stringify(newCapturedState));
+          
+          const trulyCapturedCount = Object.values(newCapturedState).filter(status => status === true).length;
+          
+          if (onGameCapture) onGameCapture(trulyCapturedCount);
+
+          if (trulyCapturedCount >= 150 && !newCapturedState[151]) {
+            setTimeout(() => {
+              setShowSpecialEvent(true); 
+            }, 2000);
+          }
+
+          setIsScanning(false);
+      }, 2500);
     }
   };
 
-  // --- CAMBIO 3: HANDLER PARA DESBLOQUEAR MEW ---
   const handleWinSpecialEvent = () => {
-    // Lo marcamos como 'unlocked' para que aparezca en la grilla (en gris)
     const unlockedState = { ...captured, 151: 'unlocked' };
     setCaptured(unlockedState);
     localStorage.setItem('pokemonQuizSaveData', JSON.stringify(unlockedState));
@@ -515,6 +583,9 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
   }, [currentQuestion, isTransitioning, quizQuestions, score, selectedPokemon, inBonusRound]);
 
   const closeModal = useCallback(() => {
+    // Bloquear cierre si está escaneando para no interrumpir la lógica
+    if (isScanning) return; 
+
     setSelectedPokemon(null);
     setQuizMode(false);
     setShowResult(false);
@@ -525,7 +596,8 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
     setInBonusRound(false);
     setIsTransitioning(false);
     setSelectedAnswerIndex(null);
-  }, []);
+    setIsScanning(false);
+  }, [isScanning]);
 
   return (
     <>
@@ -656,6 +728,8 @@ export default function PokemonQuiz({ onGoBack, onGameCapture }) {
                 score={score}
                 captureAttempt={captureAttempt}
                 inBonusRound={inBonusRound}
+                // PROP NUEVA PARA ESCANEO
+                isScanning={isScanning}
             />
         )}
 
