@@ -137,7 +137,7 @@ const LoadingScreen = ({ isActive }) => {
       </div>
 
       <div className="absolute bottom-8 text-center opacity-30">
-         <p className="text-[10px] font-mono tracking-widest">SILPH CO. SYSTEMS v.0.5.0</p>
+         <p className="text-[10px] font-mono tracking-widest">SILPH CO. SYSTEMS v.0.6.0</p>
       </div>
 
     </div>

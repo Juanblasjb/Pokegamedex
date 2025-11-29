@@ -60,7 +60,7 @@ export const menuOptions = [
 ];
 
 export const defaultContent = {
-    mainTitle: 'POKÉDEX v.0.5.0',
+    mainTitle: 'POKÉDEX v.0.6.0',
     subtitle: 'Sistema operativo listo. Selecciona un módulo para comenzar.',
     modeTitle: 'ESPERANDO COMANDO',
     pokemonImage: POKEMON_IMAGES.default,

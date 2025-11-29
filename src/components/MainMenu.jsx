@@ -179,7 +179,7 @@ const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, hasSaveData })
                     <div className="absolute bottom-6 right-10 flex items-center gap-2 opacity-50">
                         <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
                         <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
-                            System Online // v0.5.0
+                            System Online // v0.6.0
                         </span>
                     </div>
                 </div>
