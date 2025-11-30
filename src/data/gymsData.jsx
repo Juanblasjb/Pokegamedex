@@ -2,15 +2,95 @@
 
 export const GYM_DATA = [
   {
-    id: 'pallet',
-    name: 'Pueblo Paleta',
-    type: 'Inicio',
-    x: 10, y: 50,
-    isGym: false,
+    id: 'pallet-town',
+    name: 'Pueblo Paleta', // Nombre para el nodo del mapa
+    city: 'Pueblo Paleta', // Nombre para la tarjeta
+    description: 'El inicio de tu aventura. Aprende las mecánicas básicas de combate y conocimiento con el Profesor Oak.',
+    
+    // Configuración de "Jefe" (Tutorial)
+    leader: 'Prof. Oak',
+    leaderImg: '/assets/gym_leaders/oak.png', // Asegúrate de tener una imagen de Oak
+    leaderPortrait: '/assets/gym_leaders/oak1.png',
+    type: 'Tutorial',
+    introQuote: "¡Bienvenido al mundo Pokémon! Antes de iniciar tu viaje, repasemos los conceptos básicos de batalla.",
+    threatLevel: 1, // Nivel bajo, es un tutorial
+    music: '/assets/sounds/tutorial.mp3',
+    // Configuración del Mapa
+    x: 10, y: 50, // Posición inicial
+    isGym: false, // Mantenemos false para que el icono del mapa sea un Pin, no espadas
+    isTutorial: true, // NUEVA FLAG IMPORTANTE
     minCaptures: 0,
-    background: '/assets/backgrounds/pallet.png', 
-    description: "Hogar dulce hogar. Aquí comienza tu viaje Pokémon.",
-    // Sin datos de batalla porque no es gym
+    required: 0,
+    background: '/assets/backgrounds/pallet.png',
+    badge: 'Licencia', // Nombre del premio
+
+    // SIN MINIONS (Saltará directo al Líder/Tutorial)
+    minions: [],
+
+    // --- NUEVO: GUIONES DEL TUTORIAL ---
+    tutorialScripts: {
+        intro: [
+            { text: "¡Hola! Soy el Profesor Oak. Bienvenido al Simulador de Batalla de Gimnasio.", emotion: "default" },
+            { text: "Aquí pondrás a prueba tus conocimientos y estrategias antes de enfrentar a los Líderes.", emotion: "explain" },
+            { text: "Un combate de Gimnasio consta de 3 Fases distintas.", emotion: "explain" },
+            { text: "¡Empecemos con la teoría!", emotion: "happy" }
+        ],
+        phase1: [
+            { text: "FASE 1: CONOCIMIENTO TÉCNICO.", emotion: "default" },
+            { text: "Un buen entrenador debe conocer la teoría. Responderás preguntas sobre tipos y objetos.", emotion: "explain" },
+            { text: "¡Demuéstrame lo que sabes!", emotion: "serious" }
+        ],
+        phase2: [
+            { text: "FASE 2: LA ARENA DE COMBATE (ESTADIO).", emotion: "default" },
+            { text: "Aquí es donde tu equipo Pokémon entra en acción. Seleccionarás 3 Pokémon de tu PC.", emotion: "happy" },
+            { text: "El sistema girará una ruleta eligiendo una Estadística (Ataque, Velocidad, HP...) y una condición (Mayor o Menor).", emotion: "explain" },
+            { text: "Debes elegir al Pokémon de tu equipo que mejor se adapte a esa condición para vencer al mío.", emotion: "explain" },
+            { text: "¡Es una batalla de estrategia y conocimiento de tus propias criaturas!", emotion: "serious" }
+        ],
+        phase3: [
+            { text: "FASE 3: ANÁLISIS DE CAMPO (ESCENA).", emotion: "default" },
+            { text: "Un entrenador debe ser observador. Te mostraré una imagen de una situación real o del anime.", emotion: "explain" },
+            { text: "Tendrás que analizarla y responder una pregunta específica sobre lo que estás viendo.", emotion: "explain" },
+            { text: "A veces la respuesta está en un detalle pequeño. ¡Abre bien los ojos!", emotion: "serious" }
+        ],
+        // --- NUEVO: GUION FINAL ---
+        victory: [
+            { text: "¡Excelente trabajo! Has completado el entrenamiento básico con éxito.", emotion: "happy" },
+            { text: "Has demostrado tener el potencial necesario para convertirte en un gran Maestro Pokémon.", emotion: "default" },
+            { text: "Ahora comienza tu verdadero viaje. Viaja por todo Kanto y desafía a los 8 Líderes de Gimnasio.", emotion: "default" },
+            { text: "Si logras reunir las 8 medallas, obtendrás el derecho de acceder a la Liga Pokémon...", emotion: "explain" },
+            { text: "...y ¡Tendrás la oportunidad de desafiar al Alto Mando para coronarte Campeón!.", emotion: "happy" },
+            { text: "¡Buena suerte en tu aventura! El mundo Pokémon te espera.", emotion: "happy" }
+        ]
+    },
+    leaderPhase1: [
+      {
+        question: "¿Cuál de estos NO es un Pokémon inicial de Kanto?",
+        options: ["Charmander", "Squirtle", "Pikachu", "Chikorita"],
+        correct: 3 // Riolu
+      },
+      {
+        question: "¿Qué objeto se usa para capturar Pokémon?",
+        options: ["Poción", "Poké Ball", "Mapa", "Bicicleta"],
+        correct: 1
+      },
+      {
+        question: "¿A qué lugar debes ir para curar a tus Pokémon heridos totalmente gratis?",
+        options: ["Centro Pokémon", "Tienda", "Hierba", "Gimnasios"],
+        correct: 0
+      },
+    ],
+
+    // FASE 2: Equipo de Oak (Básico)
+    leaderTeam: [1, 4, 7], // Bulbasaur, Charmander, Squirtle
+
+    // FASE 3: Escena (Imagen fácil)
+    scenePhase: {
+      image: '/assets/scenes/tutorial.png', // Una imagen de Ash recibiendo a Pikachu o algo icónico
+      question: "¿Qué Pokémon le entrega el Profesor Oak a Ash al inicio del anime?",
+      options: ["Bulbasaur", "Charmander", "Squirtle", "Pikachu"],
+      correct: 3
+    }
   },
   {
     id: 'pewter',
@@ -22,6 +102,8 @@ export const GYM_DATA = [
     badge: '/assets/badges/roca.png',
     leaderImg: '/assets/gym_leaders/brock1.png',
     leaderPortrait: '/assets/gym_leaders/brock.png', 
+    introQuote: "¡Soy BROCK! ¡Creo en la gran resistencia de la roca y en la determinación! ¡Enséñame lo que vales!",
+    threatLevel: 3,
     required: 0, 
     minCaptures: 10,
     background: '/assets/backgrounds/pewter.png',
@@ -33,6 +115,8 @@ export const GYM_DATA = [
         id: 'm_brock_1',
         name: 'Campista Angelito',
         image: '/assets/trainers/camper.png',
+        introQuote: "¡Alto ahí, enclenque! ¡Todavía estás a años luz de retar a BROCK!",
+        threatLevel: 1,
         quiz: [
             // Aquí irían tus 15 preguntas
             { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
@@ -113,7 +197,9 @@ export const GYM_DATA = [
     isGym: true,
     badge: '/assets/badges/cascada.png',
     leaderImg: '/assets/gym_leaders/misty1.png',
-    leaderPortrait: '/assets/gym_leaders/misty.png', 
+    leaderPortrait: '/assets/gym_leaders/misty.png',
+    introQuote: "¡Hola!¿Qué táctica sigues tú para atrapar y entrenar POKéMON? ¡Mi táctica es la ofensiva total con los POKéMON del tipo AGUA!",
+    threatLevel: 3, 
     required: 1, 
     minCaptures: 20,
     background: '/assets/backgrounds/cerulean.png', 
@@ -124,84 +210,116 @@ export const GYM_DATA = [
         id: 'm_misty_1',
         name: 'Nadador Luis',
         image: '/assets/trainers/nadador.png',
+        introQuote: "¡Splash! ¡Soy el primero! ¡Al ataque!",
+        threatLevel: 1,
         quiz: [
             // Aquí irían tus 15 preguntas
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            // ... rellenar resto
-        ]
+            { question: "¿Cuántos Pokémon tiene Luis en su equipo en Pokémon Rojo Fuego y Verde Hoja?", options: ["1", "2", "3", "4"], correct: 1 },
+            { question: "¿Cuál es el primer Pokémon que saca a combatir?", options: ["Shellder", "Horsea", "Goldeen", "Staryu"], correct: 1 },            
+            { question: "¿Cuál es el segundo Pokémon de su equipo?", options: ["Staryu", "Psyduck", "Shellder", "Krabby"], correct: 2 },
+            { question: "¿De qué nivel es su Horsea en la Primera Generación (Rojo/Azul)?", options: ["14", "16", "18", "20"], correct: 1 },            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
+            { question: "¿De qué nivel es su Shellder en la Primera Generación (Rojo/Azul)?", options: ["15", "16", "17", "19"], correct: 1 },
+            { question: "¿Qué accesorio lleva el Nadador Luis en su sprite de combate en Rojo Fuego?", options: ["Un salvavidas", "Gafas de natación y gorro", "Un tubo de buceo", "Aletas"], correct: 1 },
+            { question: "¿Qué movimiento molesto de bajada de precisión usa su Horsea?", options: ["Ataque Arena", "Pantalla de Humo", "Destello", "Reducción"], correct: 1 },
+            { question: "¿Qué movimiento defensivo usa su Shellder para subir su defensa?", options: ["Refugio", "Fortaleza", "Rizo Defensa", "Barrera"], correct: 0 },
+            { question: "¿Cuánto dinero (aprox) entrega al vencerlo en Rojo Fuego/Verde Hoja?", options: ["64 monedas", "128 monedas", "200 monedas", "500 monedas"], correct: 0 },
+            { question: "¿Qué debilidad x4 tiene su Horsea?", options: ["Planta", "Eléctrico", "Ninguna (solo x2)", "Hielo"], correct: 2 },
+            { question: "¿Dónde está ubicado Luis dentro del gimnasio?", options: ["En la entrada, en tierra firme", "En el primer carril de agua", "Detrás de Misty", "En el trampolín"], correct: 1 },
+            { question: "¿Qué consejo táctico da Luis antes de combatir en algunas versiones?", options: ["Misty es muy fuerte", "El agua es mi elemento", "Primero debes vencerme a mí", "Cuidado con las burbujas"], correct: 2 },
+            { question: "¿Qué ataque ofensivo básico conocen sus dos Pokémon?", options: ["Pistola Agua", "Rayo Burbuja", "Surf", "Hidrobomba"], correct: 0 },
+            { question: "¿Cuál de sus Pokémon tiene la Defensa física más alta?", options: ["Horsea", "Shellder", "Son iguales", "Ninguno destaca"], correct: 1 },
+            { question: "¿Qué objeto lleva equipado su Shellder en Rojo Fuego (si usas Ladrón)?", options: ["Perla", "Perla Grande", "Ninguno", "Agua Mística"], correct: 2 },
+            { question: "¿Qué dice Luis después de ser derrotado?", options: ["¡No puede ser!", "¡Glu, glu, glu!", "¡Eso ha dolido!", "¡Me he ahogado!"], correct: 0 },
+            { question: "¿Qué color de bañador lleva en el arte oficial de Rojo Fuego?", options: ["Rojo", "Negro", "Azul", "Verde"], correct: 1 },
+            { question: "¿Qué estadística base es más alta en su Horsea?", options: ["Ataque", "Ataque Especial", "Velocidad", "Defensa Especial"], correct: 1 },
+            { question: "¿En Pokémon Amarillo, cambia su equipo respecto a Rojo y Azul?", options: ["Sí, tiene un Seel", "Sí, niveles más bajos", "No, mantiene Horsea y Shellder", "Sí, solo tiene a Horsea"], correct: 2 },
+            { question: "¿Qué habilidad tiene su Horsea en la Gen 3?", options: ["Nado Rápido", "Francotirador", "Humedad", "Torrente"], correct: 0 },
+            { question: "¿Qué habilidad tiene su Shellder en la Gen 3?", options: ["Caparazón", "Encadenado", "Armadura Frágil", "Robustez"], correct: 0 },
+            { question: "¿Cuál es el nombre en inglés de este entrenador?", options: ["Swimmer Luis", "Swimmer Matt", "Swimmer Jack", "Swimmer Tom"], correct: 0 },
+            { question: "¿Qué entrenador está más cerca de Luis en el gimnasio?", options: ["La Dominguera Diana", "El Joven Chano", "Misty", "Nadie, está solo"], correct: 0 },
+            { question: "¿En Pokémon Let's Go, existe el 'Nadador Luis' con ese nombre?", options: ["Sí", "No, ahora todos los entrenadores son mujeres modelos", "Sí, pero con un nombre distinto", "Sí, pero tiene 6 Pokémon"], correct: 1 },
+            { question: "¿Qué entrenador sustituye a Luis en el gimnasio en Pokémon Oro HeartGold y Plata SoulSilver?", options: ["Marinero Pascual", "Nadador Simón", "Modelo Alejandra", "Nadie, solo está Diana"], correct: 0 },
+          ]
       },{
         id: 'm_misty_2',
         name: 'Dominguera Diana',
         image: '/assets/trainers/camperw.png',
+        introQuote: "¡Soy demasiado buena para ti! ¡MISTY puede esperar!",
+        threatLevel: 1,
         quiz: [
             // Aquí irían tus 15 preguntas
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
-            { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
+            { question: "¿Cuántos Pokémon tiene Diana en su equipo en el primer combate?", options: ["1", "2", "3", "4"], correct: 0 },
+            { question: "¿Cuál es el único Pokémon que posee Diana?", options: ["Staryu", "Goldeen", "Horsea", "Psyduck"], correct: 1 },
+            { question: "¿De qué nivel es su Goldeen en Pokémon Rojo Fuego y Verde Hoja?", options: ["16", "18", "19", "21"], correct: 2 },
+            { question: "¿Dónde está ubicada Diana dentro del gimnasio?", options: ["En el agua", "En la entrada, en tierra firme", "Junto a Misty", "Escondida tras una estatua"], correct: 2 },
+            { question: "¿Cuál es el nombre en inglés de esta entrenadora?", options: ["Picnicker Diana", "Lass Diana", "Beauty Diana", "Swimmer Diana"], correct: 0 },
+            { question: "¿Qué ataque físico básico usa su Goldeen que hace daño normal?", options: ["Cornada", "Placaje", "Golpe Cabeza", "Doble Filo"], correct: 0 },
+            { question: "¿Qué movimiento de estado usa su Goldeen para confundir a tus Pokémon?", options: ["Rayo Confuso", "Supersónico", "Danza Caos", "Beso Dulce"], correct: 1 },
+            { question: "¿Cuál es la evolución del Pokémon de Diana?", options: ["Seadra", "Seaking", "Gyarados", "Lumineon"], correct: 1 },
+            { question: "¿Qué objeto lleva Diana en la mano en su sprite de combate (Gen 3)?", options: ["Una Poké Ball", "Una cesta de picnic", "Un mapa", "Nada"], correct: 3 },
+            { question: "¿Qué frase suele decir antes de empezar el combate?", options: ["¡Soy demasiado buena para ti!", "¡Perdona, te ganaré!", "¡Misty es la mejor!", "¡Me encanta el agua!"], correct: 0 },
+            { question: "¿En qué se diferencia Diana del Nadador Luis?", options: ["Diana está en tierra y Luis en el agua", "Diana tiene 2 Pokémon", "Diana usa un Staryu", "Luis es el líder"], correct: 0 },
+            { question: "¿Qué ataque volador conoce su Goldeen que sorprende a los tipo Planta?", options: ["Picotazo", "Golpe Aéreo", "Ataque Ala", "Pico Taladro"], correct: 0 },
+            { question: "¿Qué habilidad tiene su Goldeen en la Generación 3?", options: ["Nado Rápido o Velo Agua", "Intimidación", "Torrente", "Llovizna"], correct: 0 },
+            { question: "¿Cuál es la experiencia base que da su Goldeen (Nivel 19)?", options: ["Muy baja (aprox 200)", "Media (aprox 450)", "Alta (800)", "Cero"], correct: 1 },
+            { question: "¿Qué consejo te da Diana después de vencerla?", options: ["Luchar contra otros entrenadores", "Que vayas al Centro Pokémon", "Que uses ataques eléctricos", "Que te rindas"], correct: 0 },
+            { question: "¿Cambia su equipo en Pokémon Amarillo?", options: ["Sí, tiene un Psyduck", "No, sigue siendo un Goldeen Nivel 19", "Sí, evoluciona a Seaking", "Sí, tiene dos Goldeen"], correct: 1 },
+            { question: "¿Qué color predomina en la ropa de una Dominguera en Rojo Fuego?", options: ["Verde", "Rojo", "Azul", "Amarillo"], correct: 0 },
+            { question: "¿Por qué el ataque 'Picotazo' de su Goldeen es efectivo contra Bulbasaur?", options: ["Porque es tipo Volador", "Porque es tipo Veneno", "Porque es tipo Bicho", "No es efectivo"], correct: 0 },
+            { question: "¿Aparece Diana en el anime de Pokémon como personaje con nombre?", options: ["Sí, en el episodio del gimnasio", "No, es un NPC genérico", "Sí, es hermana de Misty", "Sí, es la árbitro"], correct: 1 },
+            { question: "¿Qué hace el movimiento 'Látigo' que usa su Goldeen?", options: ["Baja la Defensa", "Baja el Ataque", "Baja la Velocidad", "Sube el Ataque"], correct: 0 },
+            { question: "¿Cuántos PS base (aprox) tiene un Goldeen de nivel 19?", options: ["30-40", "50-60", "80-90", "100+"], correct: 1 },
+            { question: "¿En Pokémon Let's Go, existe la Dominguera Diana?", options: ["No, ha sido reemplazada por otra clase", "Sí, idéntica", "Sí, pero tiene un Magikarp", "Sí, es una líder"], correct: 0 },
+            { question: "¿Qué significa 'Dominguera' en el contexto de Pokémon?", options: ["Que solo pelea los domingos", "Traducción de Picnicker (Excursionista/Campista femenina)", "Que le gusta dormir", "Que usa Pokémon solares"], correct: 1 },
+            { question: "¿Cuál es la categoría de su Pokémon en la Pokédex?", options: ["Pokémon Pez Colores", "Pokémon Sirena", "Pokémon Pez Dorado", "Pokémon Reina"], correct: 0 },
+            { question: "¿Qué stat es más alto en su Goldeen?", options: ["Ataque", "Defensa", "Velocidad", "PS"], correct: 0 },
+            { question: "¿Qué accesorio lleva Diana en el pelo (sprite Gen 3)?", options: ["Una gorra", "Coletas", "Un lazo", "El pelo suelto"], correct: 0 },
             // ... rellenar resto
         ]
       }
     ],
     leaderPhase1: [ // 25 Preguntas de Misty
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
-       { question: "¿Cuál es el Pokémon insignia de Brock?", options: ["Onix", "Geodude", "Zubat", "Vulpix"], correct: 0 },
+       { question: "¿Cómo se llama la medalla que entrega Misty a los entrenadores?", options: ["Medalla Roca", "Medalla Cascada", "Medalla Trueno", "Medalla Alma"], correct: 1 },
+       { question: "¿Cuál es el Pokémon insignia de Misty en los videojuegos (Gen 1)?", options: ["Staryu", "Goldeen", "Starmie", "Lapras"], correct: 2 },
+       { question: "¿Cuántas hermanas tiene Misty?", options: ["1", "2", "3", "4"], correct: 2 },
+       { question: "¿Cómo se llaman las hermanas de Misty?", options: ["Daisy, Violet, Lily", "May, Dawn, Serena", "Jessie, Cassidy, Domino", "Joy, Jenny, Delia"], correct: 0 },
+       { question: "¿Por qué razón Misty comenzó a seguir a Ash Ketchum en el anime?", options: ["Le gustaba Ash", "Quería la Pokédex", "Ash le debía una bicicleta", "Para volver juntos a Ciudad Celeste"], correct: 2 },
+       { question: "¿A qué tipo de Pokémon le tiene fobia Misty?", options: ["Fantasma", "Bicho", "Siniestro", "Eléctrico"], correct: 1 },
+       { question: "¿Qué Pokémon de Misty sufre de dolores de cabeza constantes?", options: ["Psyduck", "Slowpoke", "Poliwag", "Togepi"], correct: 0 },
+       { question: "¿Qué Pokémon nació de un huevo que Misty cuidaba?", options: ["Togepi", "Pichu", "Azurill", "Cleffa"], correct: 0 },
+       { question: "¿Qué Pokémon de Misty evolucionó hasta convertirse en Politoed?", options: ["Poliwag", "Poliwhirl", "Poliwrath", "Poliswirl"], correct: 1 },
+       { question: "¿Qué MT entrega Misty en los juegos originales Rojo y Azul?", options: ["Rayo Burbuja", "Hidrobomba", "Surf", "Pistola Agua"], correct: 0 },
+       { question: "¿Qué MT entrega Misty en Rojo Fuego y Verde Hoja?", options: ["Salmuera", "Hidropulso", "Rayo Burbuja", "Escaldar"], correct: 1 },
+       { question: "¿En qué región viaja Misty junto a Ash y Tracey?", options: ["Kanto", "Johto", "Islas Naranja", "Hoenn"], correct: 2 },
+       { question: "¿Qué Pokémon utiliza Misty para salir del agua o luchar en tierra frecuentemente al inicio?", options: ["Goldeen", "Staryu", "Horsea", "Seel"], correct: 1 },
+       { question: "¿Qué cebo de pesca especial tiene Misty basado en ella?", options: ["Mini-Misty", "Sirena-Cebo", "Misty-Señuelo", "Anzuelo-Celeste"], correct: 0 },
+       { question: "¿Dónde está Misty cuando el jugador interrumpe su cita en los juegos de Johto?", options: ["Puente Pepita", "Cabo Celeste", "Túnel Roca", "Monte Moon"], correct: 1 },
+       { question: "¿Qué Pokémon de la región de Johto capturó Misty que es tipo Agua/Roca?", options: ["Corsola", "Quagsire", "Shuckle", "Larvitar"], correct: 0 },
+       { question: "¿Quién es la actriz de doblaje latino original de Misty?", options: ["Diana Pérez", "Xóchitl Ugarte", "Cristina Hernández", "Rossy Aguirre"], correct: 1 },
+       { question: "¿Qué Pokémon se enamoró del Corsola de Misty?", options: ["Totodile", "Corphish", "Psyduck", "Politoed"], correct: 0 },
+       { question: "¿Cuál es el nombre japonés de Misty?", options: ["Haruka", "Hikari", "Kasumi", "Iris"], correct: 2 },
+       { question: "¿Qué Pokémon usa Misty para Mega-Evolucionar en el anime (Sol y Luna)?", options: ["Blastoise", "Slowbro", "Gyarados", "Swampert"], correct: 2 },
+       { question: "¿Qué Pokémon de Misty conoce el ataque Metrónomo?", options: ["Psyduck", "Togepi", "Poliwag", "Corsola"], correct: 1 },
+       { question: "¿Por qué Misty no soporta las zanahorias y los pimientos?", options: ["Es alérgica", "Simplemente los odia", "Le recuerdan a los bichos", "Prefiere solo carne"], correct: 1 },
+       { question: "¿Qué Pokémon de agua con forma de corazón atrapó Misty?", options: ["Alomomola", "Luvdisc", "Woobat", "Clefairy"], correct: 1 },
+       { question: "¿Cómo llamó Misty a su Luvdisc?", options: ["Caserin", "Luvi", "Corazón", "Amor"], correct: 0 },
+       { question: "¿Qué Pokémon legendario elige a Misty como su 'amiga' en el manga?", options: ["Articuno", "Suicune", "Kyogre", "Manaphy"], correct: 1 },
+       { question: "¿En qué temporada del anime Misty deja de ser protagonista principal?", options: ["Al final de Kanto", "Al final de las Islas Naranja", "Al final de Johto", "Al final de Hoenn"], correct: 2 },
+       { question: "¿Qué hace el Psyduck de Misty cuando sale de la Poké Ball sin permiso?", options: ["Ataca", "Se confunde", "Baila", "Duerme"], correct: 1 },
+       { question: "¿Cuál es el nivel de Starmie cuando te enfrentas a Misty en Pokémon Rojo/Azul?", options: ["18", "21", "24", "26"], correct: 1 },
+       { question: "¿Qué disfraz usó Misty en el Festival de la Princesa?", options: ["De Goldeen", "De Sirena", "De Kimono tradicional", "De Bruja"], correct: 2 },
+       { question: "¿Cuál de estos Pokémon NO ha tenido Misty en el anime?", options: ["Goldeen", "Seaking", "Horsea", "Staryu"], correct: 1 },
+       { question: "¿Qué ropa usa Misty en los juegos Oro HeartGold y Plata SoulSilver?", options: ["Tirantes amarillos y short", "Traje de baño blanco", "Vestido azul", "Traje de neopreno"], correct: 1 },
+       { question: "¿Cómo se llama la canción dedicada a Misty en el álbum '2.B.A. Master'?", options: ["Misty's Song", "Water Girl", "Cerulean Blue", "Mermaid Dreams"], correct: 0 },
+
        // ... rellenar
     ],
     leaderTeam: [120, 54, 121], // Staryu, Psyduck, Starmie
     scenePhase: {
-        image: '/assets/scenes/brock_scene.png',
-        question: "¿Qué le dice Brock a Ash en esta escena?",
-        options: ["Tu Pikachu es muy débil", "¿Ya te rindes?", "Una descarga tan débil no daña a Onix", "Onix, ¡asfíxialo!"],
-        correct: 1
+        image: '/assets/scenes/misty_scene1.png',
+        question: "En el episodio ¡Princesa contra princesa!, ¿Qué Pokémon le da la victoria en el festival?",
+        options: ["Starmie", "Bulbasaur de Ash", "Vulpix de Brock", "Psyduck"],
+        correct: 3
     }
   },
   {
@@ -214,6 +332,8 @@ export const GYM_DATA = [
     badge: '/assets/badges/trueno.png',
     leaderImg: '/assets/gym_leaders/surge1.png',
     leaderPortrait: '/assets/gym_leaders/surge.png', 
+    introQuote: "¡Bienvenido al mundo Pokémon! Antes de iniciar tu viaje, repasemos los conceptos básicos de batalla.",
+    threatLevel: 3,
     required: 2,
     minCaptures: 30,
     background: '/assets/backgrounds/vermilion.png',
@@ -225,6 +345,8 @@ export const GYM_DATA = [
         id: 'm_surge_1',
         name: 'Marinero Dimas',
         image: '/assets/trainers/marinero.png',
+        introQuote: "¡Este lugar no es para niños! ¡Por muy fuerte que seas!",
+        threatLevel: 1,
         quiz: [
             // Aquí irían tus 15 preguntas
             { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
@@ -248,6 +370,7 @@ export const GYM_DATA = [
         id: 'm_surge_2',
         name: 'Mecánico Manolo',
         image: '/assets/trainers/mecanico.png',
+        threatLevel: 2,
         quiz: [
             // Aquí irían tus 15 preguntas
             { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },
@@ -271,6 +394,7 @@ export const GYM_DATA = [
         id: 'm_surge_3',
         name: 'Caballero Tito',
         image: '/assets/trainers/caballero.png',
+        threatLevel: 2,
         quiz: [
             // Aquí irían tus 15 preguntas
             { question: "¿Qué tipo es Geodude?", options: ["Roca/Tierra", "Roca", "Tierra", "Acero"], correct: 0 },

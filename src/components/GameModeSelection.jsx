@@ -6,8 +6,9 @@ const ILLUSTRATIONS = {
   pokedex: ['assets/pokemon/normal/123.png', 'assets/pokemon/normal/124.png', 'assets/pokemon/normal/125.png'],
   gym: ['/assets/gym_leaders/misty_full_art.png', '/assets/gym_leaders/brock_full_art.png'],
   elite: ['/assets/gym_leaders/lance_full_art.png'],
-  safari: ['assets/pokemon/normal/115.png'],
-  rocket: ['assets/pokemon/normal/150.png'] // Mewtwo queda bien para Rocket
+  rocket: ['assets/pokemon/normal/150.png'],
+  safari: ['assets/pokemon/normal/115.png']
+   // Mewtwo queda bien para Rocket
 };
 
 const MODES = [
@@ -27,7 +28,7 @@ const MODES = [
     desc: 'Enfréntate a los 8 Líderes. Demuestra tu conocimiento sobre tipos.',
     icon: <Map size={20} />,
     color: 'from-orange-500 to-red-500',
-    rules: ["Desbloqueo: 5 Capturas.", "Reto Brock: 10 Capturas.", "Gana Medallas."]
+    rules: ["Req: 5 Capturas.", "Recorre Kanto", "Gana Medallas."]
   },
   {
     id: 'elite',
@@ -37,6 +38,15 @@ const MODES = [
     icon: <Trophy size={20} />,
     color: 'from-purple-600 to-indigo-600',
     rules: ["Req: 8 Medallas + 90 Capturas.", "Lore avanzado.", "Encuentro con Mewtwo."]
+  },{
+    id: 'rocket',
+    title: 'TEAM ROCKET',
+    subtitle: 'Infiltración',
+    desc: 'Detén los planes malvados de Giovanni y recupera los Pokémon robados.',
+    icon: <Shield size={20} />,
+    // CAMBIO DE COLOR: Negro a Rojo para estética villano
+    color: 'from-gray-900 to-red-900', 
+    rules: ["Batallas dobles.", "Robo de objetos.", "Historia oscura."]
   },
   {
     id: 'safari',
@@ -46,16 +56,6 @@ const MODES = [
     icon: <Leaf size={20} />,
     color: 'from-green-500 to-emerald-500',
     rules: ["Tiempo limitado.", "Mecánicas de cebo/roca.", "Pokémon exclusivos."]
-  },
-  {
-    id: 'rocket',
-    title: 'TEAM ROCKET',
-    subtitle: 'Infiltración',
-    desc: 'Detén los planes malvados de Giovanni y recupera los Pokémon robados.',
-    icon: <Shield size={20} />,
-    // CAMBIO DE COLOR: Negro a Rojo para estética villano
-    color: 'from-gray-900 to-red-900', 
-    rules: ["Batallas dobles.", "Robo de objetos.", "Historia oscura."]
   }
 ];
 
@@ -274,8 +274,8 @@ const GameModeSelection = ({ profile, capturedData, onStartMode, onBack, onGoToM
                 const isLocked = 
                     (mode.id === 'gym' && isGymLocked) || 
                     (mode.id === 'elite' && isEliteLocked) || 
-                    (mode.id === 'safari') || 
-                    (mode.id === 'rocket' && isRocketLocked);
+                    (mode.id === 'rocket' && isRocketLocked) || 
+                    (mode.id === 'safari'); 
 
                 return (
                     <GameModeCard

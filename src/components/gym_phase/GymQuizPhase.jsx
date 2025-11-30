@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
-const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title }) => {
+const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title, maxQuestions }) => {
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [isReady, setIsReady] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -13,7 +13,12 @@ const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title }) => {
 
   useEffect(() => {
     if (questions && questions.length > 0) {
-      const randomOrderQuestions = shuffleArray(questions);
+      let randomOrderQuestions = shuffleArray(questions);
+      
+      // CAMBIO 2: Si hay un límite definido, recortamos el array
+      if (maxQuestions && maxQuestions > 0) {
+          randomOrderQuestions = randomOrderQuestions.slice(0, maxQuestions);
+      }
       const processed = randomOrderQuestions.map(q => {
         const optionsWithData = q.options.map((opt, index) => ({
           text: opt,
@@ -27,10 +32,11 @@ const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title }) => {
           correct: newCorrectIndex
         };
       });
+      
       setShuffledQuestions(processed);
       setIsReady(true);
     }
-  }, [questions]);
+  }, [questions, maxQuestions]); // Agregamos maxQuestions a la dependencia
 
   if (!isReady) return <div className="p-10 text-center text-slate-500 animate-pulse">Cargando preguntas...</div>;
 
@@ -45,7 +51,6 @@ const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title }) => {
 
     const isCorrect = optionIndex === shuffledQuestions[currentIndex].correct;
     
-    // Calculamos el score localmente para tener el valor actualizado inmediatamente
     let newScore = score;
     if (isCorrect) {
       newScore = score + 1;
@@ -58,16 +63,13 @@ const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title }) => {
         setIsAnswered(false);
         setSelectedOption(null);
       } else {
-        // --- CORRECCIÓN AQUÍ ---
         const passed = newScore >= requiredToWin;
         
-        // Creamos el objeto stats explícitamente
         const stats = {
             correct: newScore,
-            total: shuffledQuestions.length
+            total: shuffledQuestions.length // Esto ahora será 15 o 25
         };
 
-        // Enviamos AMBOS: el resultado (booleano) y las stats (objeto)
         onPhaseComplete(passed, stats);
       }
     }, 1000);
@@ -80,7 +82,7 @@ const GymQuizPhase = ({ questions, requiredToWin, onPhaseComplete, title }) => {
         <div className="flex justify-between items-end mb-4 border-b border-slate-700 pb-2">
             <div>
                 <h3 className="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-1">{title}</h3>
-                <div className="text-xl font-black italic text-white">PREGUNTA {currentIndex + 1}</div>
+                <div className="text-xl font-black italic text-white">PREGUNTA {currentIndex + 1} <span className="text-slate-500 text-sm not-italic">/ {shuffledQuestions.length}</span></div>
             </div>
             <div className="text-xs font-mono text-slate-400">
                 Score: <span className="text-cyan-400 font-bold">{score}</span>

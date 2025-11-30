@@ -45,30 +45,24 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
 
   // --- 3. MOTOR DE REGLAS ---
   const checkUnlockStatus = (node) => {
-    // A. EXCEPCIÓN PUEBLO PALETA (Siempre libre)
-    if (!node.isGym) {
-        return {
-            isPassed: true,            
-            isCurrentChallenge: false, 
-            isLockedByProgression: false,
-            hasEnoughCaptures: true,
-            minCaptures: 0,
-            canEnter: true             
-        };
-    }
+    // [ELIMINADO] Ya no existe la excepción "if (!node.isGym)". 
+    // Ahora Pueblo Paleta (Tutorial) cuenta como un nivel más que se debe superar.
 
-    // B. LÓGICA GIMNASIOS
     const nodeIndex = GYM_DATA.findIndex(n => n.id === node.id);
     
-    // 1. ¿Ya ganaste este gimnasio?
-    const isPassed = currentProgress >= nodeIndex; 
+    // 1. ¿Ya ganaste este nivel? 
+    // Si tu progreso es 1, ya ganaste el nivel 0. (1 > 0 es True)
+    // Si tu progreso es 0, no has ganado el nivel 0. (0 > 0 es False)
+    const isPassed = currentProgress > nodeIndex; 
 
-    // 2. ¿Es el reto actual? (Tu progreso + 1 = Este Gym)
-    // Nota: Si tienes 0 medallas, (0+1) = Index 1 (Brock). Correcto.
-    const isCurrentChallenge = (currentProgress + 1) === nodeIndex;
+    // 2. ¿Es el reto actual?
+    // Si tu progreso es 0, tu reto actual es el índice 0 (Tutorial).
+    // Si tu progreso es 1, tu reto actual es el índice 1 (Brock).
+    const isCurrentChallenge = currentProgress === nodeIndex;
     
     // 3. ¿Bloqueado futuro?
-    const isLockedByProgression = nodeIndex > (currentProgress + 1);
+    // Si el índice del nodo es mayor que tu progreso actual.
+    const isLockedByProgression = nodeIndex > currentProgress;
     
     // 4. Regla de Capturas
     const minCaptures = node.minCaptures || 0;
@@ -80,7 +74,9 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
         isLockedByProgression, 
         hasEnoughCaptures,
         minCaptures,
-        // CONDICIÓN DE ENTRADA: Reto actual + Capturas OK -- O -- Ya pasado.
+        // CONDICIÓN DE ENTRADA: 
+        // a) Es el reto actual Y tienes las capturas.
+        // b) Ya lo pasaste (puedes volver a entrar).
         canEnter: (isCurrentChallenge && hasEnoughCaptures) || isPassed
     };
   };
@@ -127,30 +123,30 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                 <div className={`bg-slate-900 border ${!selectedStatus.canEnter && selectedStatus.isCurrentChallenge ? 'border-orange-500/50' : 'border-slate-600'} rounded-lg shadow-2xl overflow-hidden flex flex-col transition-colors duration-300`}>
                     
                     {/* Header Tarjeta */}
-                    <div className="relative h-28 bg-slate-800 overflow-hidden border-b border-slate-700">
-                        {selectedNode.isGym ? (
-                            <>
-                                <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent z-10"></div>
-                                {/* CAMBIO AQUÍ: Usamos leaderPortrait si existe, si no, leaderImg */}
-                                <img 
-                                    src={selectedNode.leaderPortrait || selectedNode.leaderImg} 
-                                    alt={selectedNode.leader} 
-                                    className={`absolute right-0 top-0 w-auto h-full object-cover object-top transition-all duration-500 ${selectedStatus.canEnter ? 'grayscale-0' : 'grayscale brightness-50'}`}
-                                />
-                                <div className="absolute bottom-2 left-4 z-20">
-                                    <h2 className="text-2xl font-black italic text-white uppercase tracking-tighter drop-shadow-lg leading-none">{selectedNode.leader}</h2>
-                                    <span className="text-[9px] font-bold text-cyan-400 uppercase tracking-widest">
-                                        Líder de {selectedNode.type}
-                                    </span>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800 text-slate-500">
-                                <MapPin size={28} className="text-cyan-500/50 mb-1" />
-                                <span className="text-[9px] font-bold uppercase tracking-widest">Punto de Partida</span>
-                            </div>
-                        )}
-                    </div>
+<div className="relative h-28 bg-slate-800 overflow-hidden border-b border-slate-700">
+    {/* CAMBIO: Aceptamos isTutorial también */}
+    {selectedNode.isGym || selectedNode.isTutorial ? (
+        <>
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent z-10"></div>
+            <img 
+                src={selectedNode.leaderPortrait || selectedNode.leaderImg} 
+                alt={selectedNode.leader} 
+                className={`absolute right-0 top-0 w-auto h-full object-cover object-top transition-all duration-500 ${selectedStatus.canEnter ? 'grayscale-0' : 'grayscale brightness-50'}`}
+            />
+            <div className="absolute bottom-2 left-4 z-20">
+                <h2 className="text-2xl font-black italic text-white uppercase tracking-tighter drop-shadow-lg leading-none">{selectedNode.leader}</h2>
+                <span className="text-[9px] font-bold text-cyan-400 uppercase tracking-widest">
+                    {selectedNode.isTutorial ? 'Mentor Pokémon' : `Líder de ${selectedNode.type}`}
+                </span>
+            </div>
+        </>
+    ) : (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800 text-slate-500">
+            <MapPin size={28} className="text-cyan-500/50 mb-1" />
+            <span className="text-[9px] font-bold uppercase tracking-widest">Ubicación</span>
+        </div>
+    )}
+</div>
 
                     {/* Cuerpo */}
                     <div className="p-5">
@@ -199,14 +195,14 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                         )}
 
                         {/* Botones de Acción */}
-                        {selectedNode.isGym && selectedStatus.isCurrentChallenge && (
+                        {(selectedNode.isGym || selectedNode.isTutorial) && selectedStatus.isCurrentChallenge && (
                             <div className="mt-2">
                                 {selectedStatus.canEnter ? (
                                     <button 
-                                        onClick={() => onEnterGym(selectedNode.id)}
-                                        className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black italic uppercase tracking-widest text-sm rounded border-t border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 animate-pulse-slow"
-                                    >
-                                        <Play fill="currentColor" size={10} /> INICIAR BATALLA
+                                    onClick={() => onEnterGym(selectedNode.id)}
+                                    className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black italic uppercase tracking-widest text-sm rounded border-t border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 animate-pulse-slow"
+                                >
+                                    {selectedNode.isTutorial ? 'COMENZAR TUTORIAL' : 'INICIAR BATALLA'} <Play fill="currentColor" size={10} />
                                     </button>
                                 ) : (
                                     <button 
@@ -221,10 +217,10 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                         )}
                         
                         {/* Mensaje de completado */}
-                        {selectedStatus.isPassed && selectedNode.isGym && (
-                             <div className="w-full py-2 bg-green-900/20 border border-green-900/50 text-green-500 font-bold uppercase tracking-widest text-xs rounded flex items-center justify-center gap-2">
-                                <Check size={14} /> GIMNASIO VENCIDO
-                             </div>
+                        {selectedStatus.isPassed && (selectedNode.isGym || selectedNode.isTutorial) && (
+                        <div className="w-full py-2 bg-green-900/20 border border-green-900/50 text-green-500 font-bold uppercase tracking-widest text-xs rounded flex items-center justify-center gap-2">
+                        <Check size={14} /> {selectedNode.isTutorial ? 'TUTORIAL COMPLETADO' : 'GIMNASIO VENCIDO'}
+                        </div>
                         )}
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { X, Award, ArrowLeft, Filter, Search, BarChart2, Move } from 'lucide-react';
 import ShinyAnimation from './ShinyAnimation';
-import { POKEMON_DATA } from './pokemonData';
+import { POKEMON_DATA } from './pokemonData'; // Nota: Solo se usa para tipos/constantes, la carga pesada es dinámica
 import { TYPES, TYPE_ICONS, RARITY_CAPTURE_RATES, RARITY_STARS } from './constants';
 import SpecialEventModal from './components/SpecialEventModal';
 import { POKEMON_LIST } from './pokemonList';
@@ -74,7 +74,7 @@ const PokemonCard = React.memo(({ pokemon, status, onClick }) => {
 // -----------------------------------------------------------------------------
 // 2. COMPONENTE: BOTÓN DE RESPUESTA
 // -----------------------------------------------------------------------------
-    const QuizOption = React.memo(({ option, index, selectedAnswerIndex, isTransitioning, correctIndex, onAnswer }) => {
+const QuizOption = React.memo(({ option, index, selectedAnswerIndex, isTransitioning, correctIndex, onAnswer }) => {
     const isSelected = selectedAnswerIndex === index;
     const isCorrect = correctIndex === index;
 
@@ -100,7 +100,7 @@ const PokemonCard = React.memo(({ pokemon, status, onClick }) => {
 });
 
 // -----------------------------------------------------------------------------
-// 3. COMPONENTE: MODAL PRINCIPAL (Corregido: Animación solo al capturar)
+// 3. COMPONENTE: MODAL PRINCIPAL
 // -----------------------------------------------------------------------------
 const QuizModal = React.memo(({ 
   selectedPokemon, capturedStatus, isShiny, playShinyAnim, 
@@ -114,35 +114,23 @@ const QuizModal = React.memo(({
 
   const showFullColor = (capturedStatus === true || capturedStatus === 'unlocked') && !isScanning;
   
-  // --- LÓGICA DE TRANSICIÓN ---
-  // Usamos un estado local para saber si debemos ejecutar la animación de "salida" (Reveal)
   const [triggerReveal, setTriggerReveal] = useState(false);
-  
-  // Guardamos el valor anterior de isScanning para detectar el cambio
   const prevScanningRef = useRef(isScanning);
 
   useEffect(() => {
-      // Si antes estábamos escaneando (true) y ahora paramos (false)...
       if (prevScanningRef.current === true && isScanning === false) {
-          // ...significa que acabamos de capturar. Activamos la animación.
           setTriggerReveal(true);
       }
-      // Actualizamos la referencia
       prevScanningRef.current = isScanning;
   }, [isScanning]);
 
-  // Calculamos la clase de animación
-  let imageAnimationClass = "animate-float"; // Estado normal (flotando suave)
+  let imageAnimationClass = "animate-float";
   
   if (isScanning) {
-      // FASE 1: Mientras escanea (Negro a Blanco)
       imageAnimationClass = "animate-evolution-in"; 
   } else if (triggerReveal) {
-      // FASE 2: Justo al terminar de escanear (Blanco a Color)
       imageAnimationClass = "animate-evolution-out";
   }
-  // Si no estamos escaneando y no se disparó el reveal (es decir, abrimos uno ya capturado),
-  // se queda con "animate-float" por defecto.
 
   return (
     <div className="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-6 backdrop-blur-sm animate-fade-in">
@@ -220,7 +208,7 @@ const QuizModal = React.memo(({
                     </div>
                 </div>
 
-                {/* DERECHA (SIN CAMBIOS) */}
+                {/* DERECHA */}
                 <div className="w-7/12 bg-[#0f172a] p-8 flex flex-col">
                     <div className="flex justify-end items-center gap-3 mb-6 flex-shrink-0">
                         {!quizMode && !showResult && (
@@ -354,11 +342,10 @@ const QuizModal = React.memo(({
 });
 
 // -----------------------------------------------------------------------------
-// 4. COMPONENTE PRINCIPAL (ACTUALIZADO CON AUDIO Y ESCÁNER)
+// 4. COMPONENTE PRINCIPAL
 // -----------------------------------------------------------------------------
-export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedData }) {
+export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedData, profile, onAlert }) {
   const [captured, setCaptured] = useState(() => {
-    const savedData = localStorage.getItem('pokemonQuizSaveData');
     return initialCapturedData || {};
   });
   const [selectedType, setSelectedType] = useState("Todos");
@@ -383,9 +370,12 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
 
   const filteredPokemon = useMemo(() => {
     const baseList = POKEMON_LIST.filter(p => {
+        // El 151 (Mew) sigue oculto hasta el evento especial
         if (p.id === 151) {
             return captured[151] === true || captured[151] === 'unlocked';
         }
+        // El 150 (Mewtwo) SIEMPRE se muestra (para generar curiosidad), 
+        // el bloqueo es al hacer click.
         return true; 
     });
 
@@ -427,14 +417,31 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
   }, [inBonusRound, selectedPokemon]);
   
   const handlePokemonClick = useCallback(async (pokemonLite) => {
-    // Si ya lo tenemos capturado, no necesitamos preguntas, pero sí stats/descripción
-    // que también están en el archivo pesado. Así que cargamos siempre.
-    
-    setIsLoadingDetails(true); // Podrías poner un spinner pequeño en la tarjeta si quieres
+    setIsLoadingDetails(true);
+
+    // --- LÓGICA DE BLOQUEO DE MEWTWO (ID 150) ---
+    if (pokemonLite.id === 150) {
+        // Asumimos que si eliteProgress > 0 (o la condición que definas para ganar la liga), es campeón.
+        const isChampion = profile && profile.eliteProgress > 0; 
+
+        if (!isChampion) {
+            // USAMOS LA ALERTA PERSONALIZADA
+            if (onAlert) {
+                onAlert(
+                    "ACCESO DENEGADO", 
+                    "Señal psíquica demasiado fuerte.\nNivel de autorización insuficiente.\n\nRequisito: DERROTAR AL ALTO MANDO.", 
+                    "error"
+                );
+            } else {
+                alert("🔒 ACCESO DENEGADO: NIVEL DE CAMPEÓN REQUERIDO");
+            }
+            setIsLoadingDetails(false);
+            return; // Detiene la carga
+        }
+    }
+    // ---------------------------------------------
 
     try {
-        // AQUÍ OCURRE LA MAGIA: El navegador descarga el archivo de 12k líneas AHORA, no antes.
-        // Webpack/Vite separará esto en un "chunk" separado.
         const module = await import('./pokemonData'); 
         const fullData = module.POKEMON_DATA.find(p => p.id === pokemonLite.id);
 
@@ -457,7 +464,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
             setCaptureAttempt(null);
             setInBonusRound(false);
             
-            // Lógica de preguntas con los datos recién cargados
             const randomQuestions = selectRandomQuestions(fullData.quiz);
             const questionsWithShuffledOptions = randomQuestions.map(q => shuffleOptions(q));
             setQuizQuestions(questionsWithShuffledOptions);
@@ -471,7 +477,7 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
     } finally {
         setIsLoadingDetails(false);
     }
-  }, [captured]);
+  }, [captured, profile, onAlert]); // Agregamos profile y onAlert a dependencias
 
   const handleShinyToggle = useCallback((shinyState) => {
     setIsShiny(prev => {
@@ -504,12 +510,10 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
       // 1. INICIAR ESCANEO VISUAL
       setIsScanning(true);
 
-      // 2. REPRODUCIR SONIDO (SOLUCIÓN DEFINITIVA)
-      // Creamos una instancia nueva cada vez. Esto evita conflictos de estado.
+      // 2. REPRODUCIR SONIDO
       const sfx = new Audio('/assets/sounds/scan_sfx.mp3');
       sfx.volume = 1.0;
       sfx.play().catch(err => {
-          // Este log te ayudará a saber si es el navegador bloqueándolo
           console.warn("El navegador bloqueó el sonido o no encontró el archivo:", err);
       });
 
@@ -728,7 +732,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
                 score={score}
                 captureAttempt={captureAttempt}
                 inBonusRound={inBonusRound}
-                // PROP NUEVA PARA ESCANEO
                 isScanning={isScanning}
             />
         )}

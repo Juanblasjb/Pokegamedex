@@ -4,17 +4,18 @@ import { POKEMON_DATA } from '../pokemonData';
 import { Clock, Map, Wallet, BookOpen, RefreshCw, X, ArrowLeft, Star } from 'lucide-react';
 
 const GYM_LEADERS = [
-  { id: 'brock', name: 'Brock', badge: 'Roca', img: '/assets/badges/roca.png', order: 1 },
-  { id: 'misty', name: 'Misty', badge: 'Cascada', img: '/assets/badges/cascada.png', order: 2 },
-  { id: 'surge', name: 'Lt. Surge', badge: 'Trueno', img: '/assets/badges/trueno.png', order: 3 },
-  { id: 'erika', name: 'Erika', badgeName: 'Arcoíris', img: '/assets/badges/arcoiris.png', order: 4 },
-  { id: 'koga', name: 'Koga', badge: 'Alma', img: '/assets/badges/alma.png', order: 5 },
-  { id: 'sabrina', name: 'Sabrina', badge: 'Pantano', img: '/assets/badges/pantano.png', order: 6 },
-  { id: 'blaine', name: 'Blaine', badge: 'Volcán', img: '/assets/badges/volcan.png', order: 7 },
-  { id: 'giovanni', name: 'Giovanni', badge: 'Tierra', img: '/assets/badges/tierra.png', order: 8 },
+  { id: 'brock', name: 'Brock', badge: 'Roca', img: '/assets/badges/roca.png', order: 2 },
+  { id: 'misty', name: 'Misty', badge: 'Cascada', img: '/assets/badges/cascada.png', order: 3 },
+  { id: 'surge', name: 'Lt. Surge', badge: 'Trueno', img: '/assets/badges/trueno.png', order: 4 },
+  { id: 'erika', name: 'Erika', badgeName: 'Arcoíris', img: '/assets/badges/arcoiris.png', order: 5 },
+  { id: 'koga', name: 'Koga', badge: 'Alma', img: '/assets/badges/alma.png', order: 6 },
+  { id: 'sabrina', name: 'Sabrina', badge: 'Pantano', img: '/assets/badges/pantano.png', order: 7 },
+  { id: 'blaine', name: 'Blaine', badge: 'Volcán', img: '/assets/badges/volcan.png', order: 8 },
+  { id: 'giovanni', name: 'Giovanni', badge: 'Tierra', img: '/assets/badges/tierra.png', order: 9 },
 ];
 
-const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
+// 1. Recibimos 'onAlert' en las props
+const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate, onAlert }) => {
   const [currentTeam, setCurrentTeam] = useState(Array.isArray(profile.team) ? profile.team : []);
   const [activeView, setActiveView] = useState('info'); 
   const [showSelector, setShowSelector] = useState(false);
@@ -44,7 +45,17 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
       newTeam = newTeam.filter(id => id !== pokeId);
     } else {
       if (newTeam.length >= 6) {
-        alert("Tu equipo está lleno. Toca un Pokémon de tu equipo para quitarlo antes de añadir otro.");
+        // 2. REEMPLAZO: Usamos onAlert en lugar de alert()
+        if (onAlert) {
+            onAlert(
+                "CAPACIDAD MÁXIMA", 
+                "Tu equipo ya tiene 6 Pokémon.\n\nHaz clic en uno de los miembros actuales para quitarlo antes de añadir uno nuevo.", 
+                "warning"
+            );
+        } else {
+            // Fallback por si la prop no llega (seguridad)
+            alert("Tu equipo está lleno.");
+        }
         return;
       }
       newTeam.push(pokeId);
@@ -152,12 +163,9 @@ const TrainerCard = ({ profile, capturedData, onGoBack, onProfileUpdate }) => {
                         <div className="flex-1 bg-black/20 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
                             <div className="grid grid-cols-4 grid-rows-2 gap-3 h-full w-full">
                                 {GYM_LEADERS.map((leader) => {
-                                    // Comprobamos si el líder está desbloqueado para colorear la imagen
                                     const isUnlocked = gymProgress >= leader.order;
-                                    
                                     return (
                                         <div key={leader.id} className="relative w-full h-full bg-slate-800/80 rounded-lg overflow-hidden border border-slate-700 group">
-                                            {/* CAMBIO AQUÍ: Clase dinámica según progreso */}
                                             <img 
                                                 src={`/assets/gym_leaders/${leader.id}.png`} 
                                                 alt={leader.name} 

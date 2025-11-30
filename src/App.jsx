@@ -12,6 +12,7 @@ import PokemonQuizHard from './components/PokemonQuizHard';
 import UnlockModal from './components/UnlockModal'; 
 import GymBattle from './components/GymBattle';
 import UnlockRocketModal from './components/UnlockRocketModal';
+import GameAlert from './components/GameAlert';
 
 function App() {
   // --- ESTADOS DE NAVEGACIÓN Y SISTEMA ---
@@ -36,6 +37,22 @@ function App() {
   });
   const hasSaveData = profiles.length > 0;
 
+  // --- ESTADO DE ALERTAS PERSONALIZADAS ---
+  const [alertConfig, setAlertConfig] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info' 
+  });
+
+  const showAlert = (title, message, type = 'info') => {
+    setAlertConfig({ isOpen: true, title, message, type });
+  };
+
+  const closeAlert = () => {
+    setAlertConfig(prev => ({ ...prev, isOpen: false }));
+  };
+
   // --- LÓGICA DE DESBLOQUEO ---
   const handleGameCapture = (totalCaptures) => {
     const newSaveData = JSON.parse(localStorage.getItem('pokemonQuizSaveData') || '{}');
@@ -53,8 +70,8 @@ function App() {
         localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
     }
 
-  if (currentProfile && !currentProfile.rocketUnlocked && totalCaptures >= 15) {
-        setShowRocketUnlockModal(true); // Modal Rojo (Rocket)
+    if (currentProfile && !currentProfile.rocketUnlocked && totalCaptures >= 15) {
+        setShowRocketUnlockModal(true); 
         const updatedProfile = { ...currentProfile, rocketUnlocked: true };
         setCurrentProfile(updatedProfile);
         
@@ -100,7 +117,11 @@ function App() {
       if (mode === 'pokedex') setActiveView('pokedex');
       else if (mode === 'pokedex_hard') setActiveView('pokedex_hard');
       else if (mode === 'gym') setActiveView('gym_map');
-      else { alert("Modo en construcción"); setActiveView('game_mode_selection'); }
+      else { 
+          // CAMBIO AQUÍ
+          showAlert("SISTEMA EN CONSTRUCCIÓN", "Este módulo de simulación aún no está disponible.\nVuelve más tarde, entrenador.", "warning"); 
+          setActiveView('game_mode_selection'); 
+      }
     }, 4000);
   };
 
@@ -129,13 +150,11 @@ function App() {
   const handleGoToContinue = () => { setIsCreatingMode(false); navigateTo('profile_selection'); };
   
   const handleOpenTrainerCard = () => {
-    // 1. Si ya tenemos un perfil cargado (ej: acabamos de crearlo), úsalo directo.
     if (currentProfile) {
         navigateTo('trainer_card');
         return;
     }
 
-    // 2. Si no (ej: venimos desde el menú principal sin seleccionar), búscalo.
     if (profiles.length > 0) {
       const lastActiveId = localStorage.getItem('lastActiveProfileId');
       let targetProfile = profiles.find(p => p.id == lastActiveId) || profiles[profiles.length - 1];
@@ -155,7 +174,6 @@ function App() {
   const handleCreateProfile = (profileName, skinId) => {
     if (profiles.length >= 8) return;
     
-    // CORRECCIÓN: Inicializamos 'team' como array vacío
     const newProfile = { 
         id: Date.now(), 
         name: profileName, 
@@ -166,7 +184,7 @@ function App() {
         gymProgress: 0, 
         eliteProgress: 0, 
         gymUnlocked: false,
-        team: [] // <--- ESTO FALTABA
+        team: [] 
     };
 
     const updatedProfiles = [...profiles, newProfile];
@@ -192,8 +210,7 @@ function App() {
   const handleSelectProfile = (profile) => {
     if (isCreatingMode) {
       if (window.confirm(`¿Reiniciar aventura de ${profile.name}?`)) {
-        // CORRECCIÓN: Al reiniciar también reseteamos el team
-        const resetProfile = { ...profile, playTime: 0, startDate: Date.now(), companion: null, gymProgress: 0, gymUnlocked: false, team: [] };
+        const resetProfile = { ...profile, playTime: 0, startDate: Date.now(), companion: null, gymProgress: 0, gymUnlocked: false, rocketUnlocked: false, team: [] };
         const updatedProfiles = profiles.map(p => p.id === profile.id ? resetProfile : p);
         
         setProfiles(updatedProfiles);
@@ -208,11 +225,32 @@ function App() {
         navigateTo('game_mode_selection');
       }
     } else {
-      setCurrentProfile(profile);
-      localStorage.setItem('lastActiveProfileId', profile.id);
-      
       const specificSaveDataStr = localStorage.getItem(`save_file_${profile.id}`);
       const specificSaveData = specificSaveDataStr ? JSON.parse(specificSaveDataStr) : {};
+      
+      const totalCaptures = Object.values(specificSaveData).filter(s => s === true).length;
+      
+      let updatedProfile = { ...profile };
+      let hasUpdates = false;
+
+      if (totalCaptures >= 5 && !profile.gymUnlocked) {
+          updatedProfile.gymUnlocked = true;
+          hasUpdates = true;
+      }
+
+      if (totalCaptures >= 15 && !profile.rocketUnlocked) {
+          updatedProfile.rocketUnlocked = true;
+          hasUpdates = true;
+      }
+
+      if (hasUpdates) {
+          const updatedProfilesList = profiles.map(p => p.id === profile.id ? updatedProfile : p);
+          setProfiles(updatedProfilesList);
+          localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
+      }
+
+      setCurrentProfile(updatedProfile); 
+      localStorage.setItem('lastActiveProfileId', updatedProfile.id);
       
       localStorage.setItem('pokemonQuizSaveData', JSON.stringify(specificSaveData));
       setCurrentSaveData(specificSaveData); 
@@ -234,6 +272,67 @@ function App() {
     navigateTo('menu');
   };
 
+  // --- DEV TOOLS: CÓDIGO KONAMI ---
+  useEffect(() => {
+    const konamiCode = [
+      "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", 
+      "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", 
+      "b", "a"
+    ];
+    
+    let keyIndex = 0;
+
+    const handleKeyDown = (e) => {
+      if (!currentProfile) return;
+
+      if (e.key === konamiCode[keyIndex]) {
+        keyIndex++;
+        if (keyIndex === konamiCode.length) {
+          activateDevCheat();
+          keyIndex = 0;
+        }
+      } else {
+        keyIndex = 0;
+      }
+    };
+
+    const activateDevCheat = () => {
+      // 1. Validaciones
+      if (currentProfile.cheatUsed) return;
+      
+      const currentCapturesCount = Object.values(currentSaveData).filter(x => x === true).length;
+      if (currentCapturesCount > 0) return;
+
+      // 2. Lógica
+      const allIds = Array.from({ length: 150 }, (_, i) => i + 1);
+      const newCaptures = {};
+      
+      for (let i = 0; i < 5; i++) {
+        const randomIndex = Math.floor(Math.random() * allIds.length);
+        const pokemonId = allIds[randomIndex];
+        newCaptures[pokemonId] = true;
+        allIds.splice(randomIndex, 1);
+      }
+
+      const updatedSaveData = { ...currentSaveData, ...newCaptures };
+      setCurrentSaveData(updatedSaveData);
+      localStorage.setItem(`save_file_${currentProfile.id}`, JSON.stringify(updatedSaveData));
+      localStorage.setItem('pokemonQuizSaveData', JSON.stringify(updatedSaveData));
+
+      const successSound = new Audio('/assets/sounds/secret.mp3');
+      successSound.volume = 0.5;
+      successSound.play().catch(e => console.warn("Audio bloqueado", e));
+
+      const updatedProfile = { ...currentProfile, cheatUsed: true };
+      handleUpdateProfile(updatedProfile);
+
+      handleGameCapture(5);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentProfile, currentSaveData]); 
+
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
        
@@ -241,7 +340,6 @@ function App() {
           <UnlockModal onClose={() => setShowUnlockModal(false)} />
        )}
 
-       {/* NUEVO MODAL ROCKET */}
        {showRocketUnlockModal && (
           <UnlockRocketModal onClose={() => setShowRocketUnlockModal(false)} />
        )}
@@ -278,16 +376,16 @@ function App() {
             onBack={() => navigateTo('game_mode_selection')} 
             
             onEnterGym={(gymId) => { 
-                // --- VALIDACIÓN DE EQUIPO ---
                 const userTeam = currentProfile.team || [];
-
-                // Verificamos que tenga al menos 3 Pokémon (necesarios para la Fase 2: Estadio)
                 if (userTeam.length < 3) {
-                   alert("⚠️ ACCESO DENEGADO AL GIMNASIO\n\nNo puedes desafiar al Líder sin un equipo preparado.\n\nPor favor, ve a tu 'Ficha de Entrenador' y selecciona al menos 3 Pokémon en 'MI EQUIPO'.");
-                   return; // Detiene la entrada al gimnasio
+                   showAlert(
+                     "ACCESO DENEGADO", 
+                     "No puedes desafiar al Líder sin un equipo preparado.\n\nPor favor, ve a tu 'Ficha de Entrenador' y selecciona al menos 3 Pokémon en 'MI EQUIPO'.", 
+                     "error"
+                   );
+                   return; 
                 }
-                
-                // Si cumple la condición, entra
+                // --- CORRECCIÓN AQUÍ: Si pasa la validación, entramos ---
                 setSelectedGymId(gymId);
                 setActiveView('gym_battle'); 
             }} 
@@ -295,29 +393,49 @@ function App() {
         )}
       </div>
 
-      {/* --- VISTA: BATALLA DE GIMNASIO --- */}
       <div className={`screen ${activeView === "gym_battle" ? "visible" : "hidden"}`}>
         {currentProfile && selectedGymId && activeView === 'gym_battle' && (
             <GymBattle 
+                key={`${currentProfile.id}-${selectedGymId}`}
                 gymId={selectedGymId}
-                // Pasamos el equipo, si es undefined pasamos array vacío
                 userName={currentProfile.name}
+                profileId={currentProfile.id}
                 userTeam={currentProfile.team || []} 
                 
-                onVictory={() => {
+                onVictory={(rewardPokemon) => { 
                     const currentProgress = currentProfile.gymProgress || 0;
-                    const newProgress = currentProgress + 1;
+                    
+                    const gymIndex = ["pallet-town", "pewter", "cerulean", "vermilion", "celadon", "fuchsia", "saffron", "cinnabar", "viridian"].indexOf(selectedGymId);
+                    const newProgress = Math.max(currentProgress, gymIndex + 1);
                     
                     const updatedProfile = { ...currentProfile, gymProgress: newProgress };
                     handleUpdateProfile(updatedProfile); 
                     
-                    alert(`¡Felicidades! Has obtenido la medalla.`);
+                    if (rewardPokemon) {
+                        const newSaveData = { ...currentSaveData, [rewardPokemon.id]: true };
+                        setCurrentSaveData(newSaveData);
+                        localStorage.setItem(`save_file_${currentProfile.id}`, JSON.stringify(newSaveData));
+                        localStorage.setItem('pokemonQuizSaveData', JSON.stringify(newSaveData));
+                        
+                        showAlert(
+                            "¡TUTORIAL COMPLETADO!",
+                            `Has completado el entrenamiento básico.\nEl Profesor Oak te ha entregado a ${rewardPokemon.name} como regalo de bienvenida.`,
+                            "success"
+                        );
+                    } else {
+                        showAlert(
+                            "¡VICTORIA!",
+                            "Has obtenido la medalla y tu progreso ha sido guardado.",
+                            "success"
+                        );
+                    }
+
                     setSelectedGymId(null);
                     setActiveView('gym_map');
                 }}
                 
                 onDefeat={() => {
-                    alert("Has sido derrotado. ¡Entrena más y vuelve a intentarlo!");
+                    showAlert("DERROTA", "Has sido derrotado. ¡Entrena más y vuelve a intentarlo!", "error");
                     setSelectedGymId(null);
                     setActiveView('gym_map');
                 }}
@@ -339,6 +457,8 @@ function App() {
             <PokemonQuiz 
                 key={gameId} 
                 initialCapturedData={currentSaveData}
+                profile={currentProfile}
+                onAlert={showAlert} 
                 onGoBack={() => { 
                     if (currentProfile) { 
                         const currentProgress = localStorage.getItem('pokemonQuizSaveData'); 
@@ -359,17 +479,25 @@ function App() {
       <div className={`screen ${activeView === "trainer_card" ? "visible" : "hidden"}`}>
         {currentProfile && (
             <TrainerCard 
-                // --- CAMBIO CLAVE AQUÍ ---
-                // Esto fuerza a que el componente se reinicie si cambia el usuario
                 key={currentProfile.id} 
-                
                 profile={currentProfile} 
                 capturedData={currentSaveData} 
+                onAlert={showAlert}
                 onGoBack={() => { setCurrentProfile(null); navigateTo('menu'); }} 
                 onProfileUpdate={handleUpdateProfile} 
             />
         )}
       </div>
+
+      {/* --- AQUÍ RENDERIZAMOS LA ALERTA --- */}
+      <GameAlert 
+          isOpen={alertConfig.isOpen}
+          title={alertConfig.title}
+          message={alertConfig.message}
+          type={alertConfig.type}
+          onClose={closeAlert}
+      />
+
     </div>
   );
 }

@@ -55,6 +55,18 @@ export const availableSkins = [
     imageUrl: '/assets/Skins/Oak_Skin.png', // Imagen grande
     locked: false,
   },{
+    id: 'hisui',
+    name: 'Red Montañero',
+    iconUrl: '/assets/icons/Icon_Montañero_Skin.png', // Icono para la miniatura
+    imageUrl: '/assets/Skins/Red_Montañero_Skin.png', // Imagen grande
+    locked: false,
+  },{
+    id: 'shinobi',
+    name: 'Red Marinero S.S. Anne',
+    iconUrl: '/assets/icons/Icon_Marinero_Skin.png', // Icono para la miniatura
+    imageUrl: '/assets/Skins/Red_Marinero_Skin.png', // Imagen grande
+    locked: false,
+  },{
     id: 'santa',
     name: 'Santa Claus',
     iconUrl: '/assets/icons/Icon_Santa_Skin.png', // Icono para la miniatura
