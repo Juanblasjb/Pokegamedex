@@ -1,0 +1,43 @@
+/* Contenedor que se superpone a la imagen del Pokémon */
+.sparkle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* Permite hacer clic a través de él */
+  overflow: hidden;
+  z-index: 10; /* Asegura que los brillos aparezcan por encima de la imagen */
+}
+
+/* Wrapper para cada brillo. Aquí se aplica la animación. */
+.sparkle-wrapper {
+  position: absolute;
+  opacity: 0; /* Empieza invisible */
+  /* Llama a nuestra nueva animación, que dura 0.9s */
+  animation: shiny-pop 2.0s ease-in-out forwards;
+}
+
+/* El SVG que contiene la estrella */
+.sparkle-svg {
+  /* Este filtro es la clave para el resplandor suave y exacto */
+  filter: drop-shadow(0 0 4px #00BFFF) drop-shadow(0 0 8px #00BFFF);
+  /* Asegura que el resplandor no sea cortado por los bordes del SVG */
+  overflow: visible;
+}
+
+/* La nueva animación "shiny-pop", más fiel al juego */
+@keyframes shiny-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.5) rotate(60deg); /* Crece rápido a un tamaño mayor al final */
+  }
+  70% {
+    opacity: 1; /* Mantiene la opacidad antes de empezar a desaparecer */
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(120deg); /* Desaparece mientras encoge y rota */
+  }
+}

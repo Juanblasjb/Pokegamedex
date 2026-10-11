@@ -1,0 +1,24 @@
+.trainer-card-skin { width:auto; height:95%; max-width:100%; object-fit:contain; object-position:center bottom; }
+.trainer-card-hall { overflow:hidden; }
+.trainer-card-hall-meta { display:flex; align-items:center; gap:.8rem; margin-bottom:.8rem; color:#fde047; }
+.trainer-card-hall-meta > svg { width:1.75rem; height:1.75rem; }
+.trainer-card-hall-meta strong,.trainer-card-hall-meta span { display:block; }
+.trainer-card-hall-meta strong { font-size:.85rem; text-transform:uppercase; }
+.trainer-card-hall-meta span { margin-top:.15rem; color:#7890a8; font-size:.65rem; }
+.trainer-card-hall-team { height:calc(100% - 3rem); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:repeat(2,minmax(0,1fr)); gap:.6rem; }
+.trainer-card-hall-team article { position:relative; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:.45rem; overflow:hidden; border:1px solid #31566d; border-top-color:#eab308; background:#071523b8; text-align:center; }
+.trainer-card-hall-team article > span { position:absolute; top:.35rem; left:.45rem; color:#57758c; font:.6rem monospace; }
+.trainer-card-hall-team img { width:100%; height:min(6.5rem,70%); object-fit:contain; }
+.trainer-card-hall-team strong { font-size:.7rem; text-transform:uppercase; }
+.trainer-card-hall-team small { color:#7890a8; font-size:.55rem; }
+.trainer-card-hall-empty { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#7890a8; text-align:center; }
+.trainer-card-hall-empty > svg { width:3rem; height:3rem; color:#d9a91c; opacity:.65; }
+.trainer-card-hall-empty h2 { margin:.8rem 0 .3rem; color:#e2e8f0; font-size:1.25rem; font-weight:900; text-transform:uppercase; }
+.trainer-card-hall-empty p { margin:0; font-size:.75rem; }
+.trainer-card-hall-empty > div { display:grid; grid-template-columns:repeat(6,2.5rem); gap:.4rem; margin-top:1.25rem; }
+.trainer-card-hall-empty > div span { display:grid; place-items:center; aspect-ratio:1; border:1px dashed #31566d; color:#48667c; font:.6rem monospace; }
+
+@media (max-width:1024px) {
+  .trainer-card-skin { height:100%; max-height:100%; }
+  .trainer-card-hall-team { min-height:24rem; }
+}
