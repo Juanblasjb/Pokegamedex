@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { X, Award, ArrowLeft, Filter, Search, BarChart2, Move } from 'lucide-react';
 import ShinyAnimation from './ShinyAnimation';
-<<<<<<< HEAD
 import { TYPES, TYPE_ICONS, RARITY_CAPTURE_RATES, RARITY_STARS } from './constants';
 import SpecialEventModal from './components/SpecialEventModal';
 import CurrencyAmount from './components/CurrencyAmount';
@@ -19,25 +18,13 @@ import {
   releasePokemon,
 } from './utils/captureSystem';
 import { consumeInventoryItem, getRetryBallId, resolveCaptureAttempt, SHOP_ITEMS } from './utils/trainerProgress';
-=======
-import { POKEMON_DATA } from './pokemonData'; // Nota: Solo se usa para tipos/constantes, la carga pesada es dinámica
-import { TYPES, TYPE_ICONS, RARITY_CAPTURE_RATES, RARITY_STARS } from './constants';
-import SpecialEventModal from './components/SpecialEventModal';
-import { POKEMON_LIST } from './pokemonList';
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
 // -----------------------------------------------------------------------------
 // 1. COMPONENTE: TARJETA DE POKEMON
 // -----------------------------------------------------------------------------
 const PokemonCard = React.memo(({ pokemon, status, onClick }) => {
-<<<<<<< HEAD
   const record = getCaptureRecord({ [pokemon.id]: status }, pokemon.id);
   const showContent = record.registered;
-=======
-  const isCaptured = status === true;
-  const isUnlocked = status === 'unlocked';
-  const showContent = isCaptured || isUnlocked;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   return (
     <div 
@@ -90,7 +77,6 @@ const PokemonCard = React.memo(({ pokemon, status, onClick }) => {
       )}
       
       {showContent && (
-<<<<<<< HEAD
            <div className={`absolute top-2 right-2 w-2 h-2 rounded-full ${record.owned ? 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.8)]' : 'bg-orange-400 shadow-[0_0_5px_rgba(251,146,60,0.8)]'}`}></div>
       )}
 
@@ -98,9 +84,6 @@ const PokemonCard = React.memo(({ pokemon, status, onClick }) => {
           <div className="absolute top-2 right-6 text-[8px] font-black text-orange-300 uppercase tracking-widest">
               Libre
           </div>
-=======
-           <div className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full shadow-[0_0_5px_rgba(34,197,94,0.8)]"></div>
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       )}
     </div>
   );
@@ -139,24 +122,11 @@ const QuizOption = React.memo(({ option, index, selectedAnswerIndex, isTransitio
 // -----------------------------------------------------------------------------
 const QuizModal = React.memo(({ 
   selectedPokemon, capturedStatus, isShiny, playShinyAnim, 
-<<<<<<< HEAD
   handleShinyToggle, closeModal, quizMode, showResult, startQuiz, handleReleasePokemon,
   activeTab, setActiveTab, currentQuestion, quizQuestions, 
   selectedAnswerIndex, isTransitioning, handleAnswer, score, captureAttempt, profile, retryCapture, hiddenOptions, onUseQuizAid,
   inBonusRound, isScanning 
 }) => {
-=======
-  handleShinyToggle, closeModal, quizMode, showResult, 
-  activeTab, setActiveTab, currentQuestion, quizQuestions, 
-  selectedAnswerIndex, isTransitioning, handleAnswer, score, captureAttempt,
-  inBonusRound, isScanning 
-}) => {
-    
-  if (!selectedPokemon) return null;
-
-  const showFullColor = (capturedStatus === true || capturedStatus === 'unlocked') && !isScanning;
-  
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   const [triggerReveal, setTriggerReveal] = useState(false);
   const prevScanningRef = useRef(isScanning);
 
@@ -167,7 +137,6 @@ const QuizModal = React.memo(({
       prevScanningRef.current = isScanning;
   }, [isScanning]);
 
-<<<<<<< HEAD
   if (!selectedPokemon) return null;
 
   const captureRecord = getCaptureRecord({ [selectedPokemon.id]: capturedStatus }, selectedPokemon.id);
@@ -180,8 +149,6 @@ const QuizModal = React.memo(({
   const retryBall = SHOP_ITEMS.find(item => item.id === retryBallId);
   const retryBallQuantity = profile?.inventory?.[retryBallId] || 0;
 
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   let imageAnimationClass = "animate-float";
   
   if (isScanning) {
@@ -213,11 +180,7 @@ const QuizModal = React.memo(({
                         <img 
                             src={
                                 showFullColor
-<<<<<<< HEAD
                                     ? (displayedImageIsShiny ? `/assets/pokemon/shiny/${selectedPokemon.id}.png` : `/assets/pokemon/normal/${selectedPokemon.id}.png`)
-=======
-                                    ? (isShiny ? `/assets/pokemon/shiny/${selectedPokemon.id}.png` : `/assets/pokemon/normal/${selectedPokemon.id}.png`)
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                     : `/assets/Pokedex_silueta/${selectedPokemon.id}.png` 
                             }
                             alt={selectedPokemon.name} 
@@ -253,12 +216,9 @@ const QuizModal = React.memo(({
                         
                         {showFullColor ? (
                             <div className="animate-fade-in-up">
-<<<<<<< HEAD
                                 <div className={`inline-flex items-center justify-center px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest mb-3 ${captureRecord.owned ? 'bg-green-900/30 border-green-500 text-green-300' : 'bg-orange-900/30 border-orange-500 text-orange-300'}`}>
                                     {captureRecord.owned ? 'Capturado' : 'Liberado'}
                                 </div>
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                 <div className="flex justify-center gap-2 mb-4">
                                     {selectedPokemon.type.map(t => (
                                         <span key={t} className="text-[10px] font-bold px-2 py-1 bg-slate-800 text-cyan-400 border border-slate-600 rounded uppercase tracking-wider">{t}</span>
@@ -290,7 +250,6 @@ const QuizModal = React.memo(({
                             </div>
                         )}
 
-<<<<<<< HEAD
                         {(!quizMode || showResult) && <button 
                             onClick={closeModal} 
                             disabled={isScanning}
@@ -299,15 +258,6 @@ const QuizModal = React.memo(({
                         >
                             <X size={20} />
                         </button>}
-=======
-                        <button 
-                            onClick={closeModal} 
-                            disabled={isScanning}
-                            className={`p-1.5 rounded-lg transition-colors border ${isScanning ? 'opacity-30 cursor-not-allowed bg-slate-800 border-slate-700 text-slate-500' : 'bg-red-900/20 hover:bg-red-900/50 border-red-900/50 hover:border-red-500 text-red-400 hover:text-red-200'}`}
-                        >
-                            <X size={20} />
-                        </button>
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                     </div>
                     
                     <div className="flex-1 overflow-y-auto no-scrollbar pr-2">
@@ -326,7 +276,6 @@ const QuizModal = React.memo(({
                                     </div>
                                 </div>
                                 <h3 className="text-2xl font-bold text-white mb-8 leading-tight">{quizQuestions[currentQuestion]?.question}</h3>
-<<<<<<< HEAD
                                 <div className="mb-4 grid grid-cols-3 gap-2" aria-label="Ayudas del Quiz">
                                     {[
                                       ['repel', 'Repelente'], ['super-repel', 'Superrepelente'], ['max-repel', 'Rep. Máximo'],
@@ -336,10 +285,6 @@ const QuizModal = React.memo(({
                                 </div>
                                 <div className="grid grid-cols-1 gap-4 pb-2">
                                     {quizQuestions[currentQuestion]?.options.map((option, idx) => !hiddenOptions.includes(idx) && (
-=======
-                                <div className="grid grid-cols-1 gap-4 pb-2">
-                                    {quizQuestions[currentQuestion]?.options.map((option, idx) => (
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                         <QuizOption 
                                             key={idx} index={idx} option={option}
                                             selectedAnswerIndex={selectedAnswerIndex}
@@ -372,7 +317,6 @@ const QuizModal = React.memo(({
                                                 {isScanning 
                                                     ? "Desencriptando firma genética..." 
                                                     : (captureAttempt.success 
-<<<<<<< HEAD
                                                         ? `${selectedPokemon.name} ${captureRecord.captures > 1 ? 'ha sido recapturado como nuevo ejemplar.' : 'ha sido registrado en la base de datos.'}` 
                                                         : `Probabilidad de éxito fue del ${(captureAttempt.probability * 100).toFixed(0)}%. Inténtalo de nuevo.`)
                                                 }
@@ -384,12 +328,6 @@ const QuizModal = React.memo(({
                                             {!captureAttempt.success && <button type="button" disabled={retryBallQuantity <= 0} onClick={retryCapture} className="mt-4 min-h-11 w-full rounded border border-cyan-500 bg-cyan-950/70 px-4 text-xs font-black uppercase tracking-wider text-cyan-100 disabled:cursor-not-allowed disabled:opacity-40">
                                                 {retryBallQuantity > 0 ? `Reintentar con ${retryBall?.name} · ${retryBallQuantity}` : `Sin ${retryBall?.name || 'Ball'} disponibles`}
                                             </button>}
-=======
-                                                        ? `${selectedPokemon.name} ha sido registrado en la base de datos.` 
-                                                        : `Probabilidad de éxito fue del ${(captureAttempt.probability * 100).toFixed(0)}%. Inténtalo de nuevo.`)
-                                                }
-                                            </p>
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                         </div>
                                     ) : (
                                         <p className="text-slate-400 animate-pulse">Iniciando protocolo de captura...</p>
@@ -419,7 +357,6 @@ const QuizModal = React.memo(({
                                             <p className="text-sm text-slate-300 leading-relaxed">{selectedPokemon.description}</p>
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
-<<<<<<< HEAD
                                             {[
                                                 ['N.º Pokédex', `#${speciesDetails.pokedexNumber}`],
                                                 ['Nombre', selectedPokemon.name],
@@ -434,16 +371,12 @@ const QuizModal = React.memo(({
                                                 ['Shiny', ownedSpecimen?.isShiny ? 'Sí' : 'No'],
                                                 ['Capturas', captureRecord.captures || 0],
                                             ].map(([key, value]) => (
-=======
-                                            {Object.entries(selectedPokemon.stats).map(([key, value]) => (
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                                 <div key={key} className="flex justify-between items-center p-2 rounded bg-slate-800/30 border border-slate-700/50">
                                                     <span className="text-xs font-mono text-slate-500 uppercase">{key}</span>
                                                     <span className="text-sm font-bold text-white">{value}</span>
                                                 </div>
                                             ))}
                                         </div>
-<<<<<<< HEAD
                                         <div className="grid grid-cols-2 gap-3">
                                             {Object.entries(displayStats.stats || {}).map(([key, value]) => (
                                                 <div key={key} className="flex justify-between items-center p-2 rounded bg-slate-800/30 border border-slate-700/50">
@@ -467,8 +400,6 @@ const QuizModal = React.memo(({
                                                 </button>
                                             )}
                                         </div>
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-2 gap-2">
@@ -492,15 +423,9 @@ const QuizModal = React.memo(({
 // -----------------------------------------------------------------------------
 // 4. COMPONENTE PRINCIPAL
 // -----------------------------------------------------------------------------
-<<<<<<< HEAD
 export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedData, profile, onProfileUpdate, onAlert }) {
   const [captured, setCaptured] = useState(() => {
     return normalizeSaveData(initialCapturedData || {});
-=======
-export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedData, profile, onAlert }) {
-  const [captured, setCaptured] = useState(() => {
-    return initialCapturedData || {};
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   });
   const [selectedType, setSelectedType] = useState("Todos");
   const [selectedPokemon, setSelectedPokemon] = useState(null);
@@ -516,14 +441,9 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
   const [inBonusRound, setInBonusRound] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
-<<<<<<< HEAD
   const [hiddenOptions, setHiddenOptions] = useState([]);
   const [showSpecialEvent, setShowSpecialEvent] = useState(false);
   const [, setIsLoadingDetails] = useState(false);
-=======
-  const [showSpecialEvent, setShowSpecialEvent] = useState(false);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   // --- ESTADO Y REF PARA EL ESCANEO ---
   const [isScanning, setIsScanning] = useState(false);
@@ -532,11 +452,8 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
     const baseList = POKEMON_LIST.filter(p => {
         // El 151 (Mew) sigue oculto hasta el evento especial
         if (p.id === 151) {
-<<<<<<< HEAD
-            return isSpeciesRegistered(captured, 151);
-=======
-            return captured[151] === true || captured[151] === 'unlocked';
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
+            const mewRecord = getCaptureRecord(captured, 151);
+            return mewRecord.specialUnlock || mewRecord.registered;
         }
         // El 150 (Mewtwo) SIEMPRE se muestra (para generar curiosidad), 
         // el bloqueo es al hacer click.
@@ -548,12 +465,8 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
       : baseList.filter(p => p.type.includes(selectedType));
   }, [selectedType, captured]);
 
-<<<<<<< HEAD
   const capturedCount = countRegisteredSpecies(captured);
   const ownedCount = countOwnedPokemon(captured);
-=======
-  const capturedCount = Object.values(captured).filter(status => status === true).length;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   const totalPokemon = 150;
 
   useEffect(() => {
@@ -581,15 +494,11 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
         setTimeout(() => {
             setCurrentQuestion(prev => prev + 1);
             setIsTransitioning(false);
-<<<<<<< HEAD
             setHiddenOptions([]);
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         }, 100);
     }
   }, [inBonusRound, selectedPokemon]);
   
-<<<<<<< HEAD
   const startPokemonQuiz = useCallback((fullData) => {
     setSelectedPokemon(fullData);
     setQuizMode(true);
@@ -636,15 +545,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
     // --- LÓGICA DE BLOQUEO DE MEWTWO (ID 150) ---
     if (pokemonLite.id === 150) {
         const isChampion = profile && profile.eliteProgress >= 5;
-=======
-  const handlePokemonClick = useCallback(async (pokemonLite) => {
-    setIsLoadingDetails(true);
-
-    // --- LÓGICA DE BLOQUEO DE MEWTWO (ID 150) ---
-    if (pokemonLite.id === 150) {
-        // Asumimos que si eliteProgress > 0 (o la condición que definas para ganar la liga), es campeón.
-        const isChampion = profile && profile.eliteProgress > 0; 
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
         if (!isChampion) {
             // USAMOS LA ALERTA PERSONALIZADA
@@ -673,7 +573,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
             return;
         }
 
-<<<<<<< HEAD
         const record = getCaptureRecord(captured, pokemonLite.id);
 
         if (record.registered) {
@@ -684,39 +583,13 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
             setIsShiny(false);
         } else {
             startPokemonQuiz(fullData);
-=======
-        if (captured[pokemonLite.id] === true) {
-            setSelectedPokemon(fullData);
-            setActiveTab('Estadísticas');
-            setIsShiny(false);
-        } else {
-            setSelectedPokemon(fullData);
-            setQuizMode(true);
-            setCurrentQuestion(0);
-            setScore(0);
-            setShowResult(false);
-            setCaptureAttempt(null);
-            setInBonusRound(false);
-            
-            const randomQuestions = selectRandomQuestions(fullData.quiz);
-            const questionsWithShuffledOptions = randomQuestions.map(q => shuffleOptions(q));
-            setQuizQuestions(questionsWithShuffledOptions);
-            
-            setIsTransitioning(false);
-            setSelectedAnswerIndex(null);
-            setIsScanning(false);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         }
     } catch (error) {
         console.error("Error cargando los datos del Pokémon:", error);
     } finally {
         setIsLoadingDetails(false);
     }
-<<<<<<< HEAD
   }, [captured, profile, onAlert, startPokemonQuiz]); // Agregamos profile y onAlert a dependencias
-=======
-  }, [captured, profile, onAlert]); // Agregamos profile y onAlert a dependencias
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   const handleShinyToggle = useCallback((shinyState) => {
     setIsShiny(prev => {
@@ -730,11 +603,7 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
   }, []);
 
   // --- LÓGICA DE CAPTURA ACTUALIZADA ---
-<<<<<<< HEAD
   const attemptCapture = (finalScore, rewardProfile = profile) => {
-=======
-  const attemptCapture = (finalScore) => {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     let success = false;
     let probability = 0;
 
@@ -749,13 +618,10 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
     
     setCaptureAttempt({ success, probability });
 
-<<<<<<< HEAD
     if (!success && rewardProfile && onProfileUpdate) {
       onProfileUpdate(resolveCaptureAttempt(rewardProfile, selectedPokemon, { success: false }).profile);
     }
 
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     if (success) {
       // 1. INICIAR ESCANEO VISUAL
       setIsScanning(true);
@@ -773,7 +639,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
 
       // 4. ESPERAR ANIMACIÓN (2.5 segundos)
       setTimeout(() => {
-<<<<<<< HEAD
           const newCapturedState = registerCapture(captured, selectedPokemon);
           setCaptured(newCapturedState);
 
@@ -795,18 +660,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
           if (onGameCapture) onGameCapture(trulyCapturedCount);
 
           if (trulyCapturedCount >= 150 && !isSpeciesRegistered(newCapturedState, 151)) {
-=======
-          const newCapturedState = { ...captured, [selectedPokemon.id]: true };
-          setCaptured(newCapturedState);
-          
-          localStorage.setItem('pokemonQuizSaveData', JSON.stringify(newCapturedState));
-          
-          const trulyCapturedCount = Object.values(newCapturedState).filter(status => status === true).length;
-          
-          if (onGameCapture) onGameCapture(trulyCapturedCount);
-
-          if (trulyCapturedCount >= 150 && !newCapturedState[151]) {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
             setTimeout(() => {
               setShowSpecialEvent(true); 
             }, 2000);
@@ -817,7 +670,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
     }
   };
 
-<<<<<<< HEAD
   const retryCapture = () => {
     const ballId = getRetryBallId(selectedPokemon);
     const profileWithBallConsumed = consumeInventoryItem(profile, ballId);
@@ -842,16 +694,11 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
 
   const handleWinSpecialEvent = () => {
     const unlockedState = registerSpecialUnlock(captured, 151);
-=======
-  const handleWinSpecialEvent = () => {
-    const unlockedState = { ...captured, 151: 'unlocked' };
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     setCaptured(unlockedState);
     localStorage.setItem('pokemonQuizSaveData', JSON.stringify(unlockedState));
     setShowSpecialEvent(false);
   };
 
-<<<<<<< HEAD
   const handleReleasePokemon = useCallback((pokemonId) => {
     const releasedState = releasePokemon(captured, pokemonId);
     setCaptured(releasedState);
@@ -866,9 +713,6 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
   }, [captured, onAlert]);
 
   const handleAnswer = (selectedIndex) => {
-=======
-  const handleAnswer = useCallback((selectedIndex) => {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     if (isTransitioning) return;
 
     setIsTransitioning(true);
@@ -900,16 +744,10 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
             setCurrentQuestion(prev => prev + 1);
             setIsTransitioning(false);
             setSelectedAnswerIndex(null);
-<<<<<<< HEAD
             setHiddenOptions([]);
         }
     }, 1000);
   };
-=======
-        }
-    }, 1000);
-  }, [currentQuestion, isTransitioning, quizQuestions, score, selectedPokemon, inBonusRound]);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   const closeModal = useCallback(() => {
     // Bloquear cierre si está escaneando para no interrumpir la lógica
@@ -938,11 +776,7 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-<<<<<<< HEAD
       <div className="aaa-pokedex-screen min-h-screen w-full bg-[#0f172a] text-white relative font-sans overflow-hidden flex flex-col">
-=======
-      <div className="min-h-screen w-full bg-[#0f172a] text-white relative font-sans overflow-hidden flex flex-col">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         
         {/* FONDOS */}
         <div className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 z-0 pointer-events-none"></div>
@@ -968,19 +802,12 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
           
           <div className="flex items-center gap-4">
                <div className="flex flex-col items-end">
-<<<<<<< HEAD
                   <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">Especies Registradas</span>
-=======
-                  <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">Progreso de Captura</span>
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                   <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-mono font-bold text-cyan-400">{capturedCount}</span>
                       <span className="text-sm text-slate-600">/ {totalPokemon}</span>
                   </div>
-<<<<<<< HEAD
                   <span className="text-[9px] font-mono uppercase text-slate-500">{ownedCount} en posesión</span>
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                </div>
                <div className="w-12 h-12 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center shadow-inner">
                   <Award className={`w-6 h-6 ${capturedCount === totalPokemon ? 'text-yellow-400 animate-pulse' : 'text-slate-600'}`} />
@@ -1059,11 +886,8 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
                 closeModal={closeModal}
                 quizMode={quizMode}
                 showResult={showResult}
-<<<<<<< HEAD
                 startQuiz={() => startPokemonQuiz(selectedPokemon)}
                 handleReleasePokemon={handleReleasePokemon}
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 currentQuestion={currentQuestion}
@@ -1073,13 +897,10 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
                 handleAnswer={handleAnswer}
                 score={score}
                 captureAttempt={captureAttempt}
-<<<<<<< HEAD
                 profile={profile}
                 retryCapture={retryCapture}
                 hiddenOptions={hiddenOptions}
                 onUseQuizAid={handleQuizAid}
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 inBonusRound={inBonusRound}
                 isScanning={isScanning}
             />
@@ -1092,8 +913,4 @@ export default function PokemonQuiz({ onGoBack, onGameCapture, initialCapturedDa
       </div>
     </>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

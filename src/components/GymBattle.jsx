@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import { Heart, Shield, Swords, Brain, Image as ImageIcon, CheckCircle, XCircle, ArrowLeft, GalleryHorizontal, MoveRightIcon, AlignRightIcon } from 'lucide-react';
-=======
-import { Heart, Shield, Swords, Brain, Image as ImageIcon, CheckCircle, XCircle, ArrowLeft, GalleryHorizontal, MoveRightIcon, AlignRightIcon, TvIcon } from 'lucide-react';
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 import { GYM_DATA } from '../data/gymsData'; 
 import GymStadiumPhase from './gym_phase/GymStadiumPhase';
 import GymScenePhase from './gym_phase/GymScenePhase';
@@ -14,16 +10,10 @@ import ProfessorOakOverlay from './ProfessorOakOverlay';
 import TutorialCompleteModal from './TutorialCompleteModal';
 // IMPORTANTE: Asegúrate de importar los datos de pokémon
 import { POKEMON_DATA } from '../pokemonData'; 
-<<<<<<< HEAD
 import { isSpeciesRegistered, normalizeSaveData } from '../utils/captureSystem';
 
 const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, onProgressReward, userName = "ENTRENADOR", profileId, battleData = GYM_DATA, progressNamespace = 'gym' }) => {
   const gymData = battleData.find(g => g.id === gymId);
-=======
-
-const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "ENTRENADOR", profileId }) => {
-  const gymData = GYM_DATA.find(g => g.id === gymId);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   const [showBadgeReward, setShowBadgeReward] = useState(false);
   
   // ESTADO PARA EL PREMIO
@@ -36,21 +26,13 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
 
   // --- 1. CONFIGURACIÓN DE PERSISTENCIA ---
   const uniqueId = profileId || userName.replace(/\s+/g, '_');
-<<<<<<< HEAD
   const STORAGE_KEY = `pokegamedex_${progressNamespace}_progress_${uniqueId}`;
-=======
-  const STORAGE_KEY = `pokegamedex_gym_progress_${uniqueId}`;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   const getSavedProgress = () => {
       try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
           return saved[gymId] || 0; 
-<<<<<<< HEAD
       } catch {
-=======
-      } catch (e) {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
           return 0;
       }
   };
@@ -62,11 +44,7 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
           const currentProfile = profiles.find(p => p.id === profileId);
           
           // Leemos las capturas del archivo de guardado específico
-<<<<<<< HEAD
           const saveData = normalizeSaveData(JSON.parse(localStorage.getItem(`save_file_${profileId}`) || '{}'));
-=======
-          const saveData = JSON.parse(localStorage.getItem(`save_file_${profileId}`) || '{}');
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
           
           return { profile: currentProfile, captures: saveData };
       } catch (e) {
@@ -149,10 +127,7 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
           saved[gymId] = currentMinionIndex + 1;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-<<<<<<< HEAD
           onProgressReward?.('gymTrainer');
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       }
 
       let msg = "";
@@ -162,11 +137,7 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
       setResultData({
           result: victory ? 'victory' : 'defeat',
           mode: 'quiz',
-<<<<<<< HEAD
           stats: { ...stats, experience: victory ? 250 : 0 },
-=======
-          stats: { ...stats, money: victory ? 200 : 0 },
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
           message: msg,
           onContinue: () => {
               setResultData(null); 
@@ -217,11 +188,7 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
     setResultData({
         result: playerWonPhase ? 'victory' : 'defeat',
         mode: modeType,
-<<<<<<< HEAD
         stats: { ...stats, experience: isFinalPhase && newResults.filter(result => result === true).length >= 2 ? 1000 : 0 },
-=======
-        stats: { ...stats, money: playerWonPhase ? 1000 : 0 },
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         message: msg,
         onContinue: () => {
             setResultData(null);
@@ -247,11 +214,7 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
                             );
                             
                             // 4. Filtrar los que ya tiene capturados (id: true)
-<<<<<<< HEAD
                             const availableRewards = commonPokemon.filter(p => !isSpeciesRegistered(captures, p.id));
-=======
-                            const availableRewards = commonPokemon.filter(p => !captures[p.id]);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
                             if (availableRewards.length > 0) {
                                 // 5. Elegir uno al azar
@@ -337,11 +300,7 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
   const isBossBattle = ['phase_1', 'phase_2', 'phase_3'].includes(currentStage);
 
   return (
-<<<<<<< HEAD
     <div className="aaa-gym-battle fixed inset-0 z-[100] bg-slate-950 text-white font-sans overflow-hidden flex flex-col">
-=======
-    <div className="fixed inset-0 z-[100] bg-slate-950 text-white font-sans overflow-hidden flex flex-col">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
       {/* --- 1. OAK OVERLAY --- */}
       {showTutorialOverlay && (
@@ -492,19 +451,11 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
                           <div className="pt-6">
                             <button onClick={() => setCurrentStage('phase_1')} className="group relative px-8 py-4 bg-gradient-to-r from-red-800 to-red-700 hover:from-red-700 hover:to-red-600 text-white font-black uppercase tracking-widest text-sm rounded-lg shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all hover:scale-[1.02] overflow-hidden border border-red-500/30">
                                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
-<<<<<<< HEAD
                                 <span className="relative z-10 flex items-center gap-3">INICIAR COMBATE<Swords size={18} className="animate-pulse" /></span>
                             </button>
                           </div>
                       </div>
                       <div className="relative h-full flex items-end justify-center z-20 animate-slide-in-right">
-=======
-                                <span className="relative z-10 flex items-center gap-3">INICIAR TUTORIAL<TvIcon size={18} className="animate-pulse" /></span>
-                            </button>
-                          </div>
-                      </div>
-                      <div className="relative h-full flex items-end justify-center z-20 animate-slide-in-right pointer-events-none">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                           <div className="absolute bottom-20 w-[300px] h-[300px] border-2 border-red-600/20 rounded-full animate-spin-slow"></div>
                           <div className="absolute bottom-20 w-[250px] h-[250px] border border-dashed border-red-600/30 rounded-full animate-reverse-spin"></div>
                           <div className="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-red-600/20 to-transparent blur-2xl"></div>
@@ -589,8 +540,4 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, userName = "E
   );
 };
 
-<<<<<<< HEAD
 export default GymBattle;
-=======
-export default GymBattle;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

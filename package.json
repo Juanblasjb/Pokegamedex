@@ -11,11 +11,8 @@
   },
   "dependencies": {
     "lucide-react": "^0.553.0",
-<<<<<<< HEAD
     "motion": "^13.4.2",
     "page-flip": "^2.0.7",
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

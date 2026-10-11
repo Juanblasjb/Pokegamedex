@@ -5,13 +5,8 @@ import {
   Play,          // Nueva Partida
   Save,          // Continuar
   IdCard,        // Ficha
-<<<<<<< HEAD
   UserRound,     // Mi perfil
   Images,        // Álbumes
-=======
-  Settings,      // Opciones
-  HelpCircle,    // Ayuda
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   ShoppingBag    // Tienda
 } from 'lucide-react';
 
@@ -20,21 +15,12 @@ const ICON_MAP = {
     new_game: Play,
     continue_game: Save,
     trainer_card: IdCard,
-<<<<<<< HEAD
     profile: UserRound,
     albums: Images,
     shop: ShoppingBag,
 };
 
 const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, onOpenProfile, onOpenAlbums, onOpenShop, hasSaveData }) => {
-=======
-    options: Settings,
-    help: HelpCircle,
-    shop: ShoppingBag,
-};
-
-const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, hasSaveData }) => {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     const [activeContent, setActiveContent] = useState(defaultContent);
     const [animateImg, setAnimateImg] = useState(false);
 
@@ -53,11 +39,7 @@ const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, hasSaveData })
     };
 
     return (
-<<<<<<< HEAD
         <div className="aaa-main-menu w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
-=======
-        <div className="w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
             
             {/* --- FONDOS GLOBALES (UNIFORMIDAD ALTA VISIBILIDAD) --- */}
             
@@ -124,28 +106,18 @@ const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, hasSaveData })
                     {/* GRID DE OPCIONES (Estilo Tech-Modules) */}
                     <div className="grid grid-cols-3 gap-5 w-full max-w-2xl">
                         {menuOptions.map((option) => {
-<<<<<<< HEAD
                             const needsSaveData = ['continue_game', 'trainer_card', 'profile'].includes(option.id);
                             const isDisabled = needsSaveData && !hasSaveData;
                             const isActive = activeContent.id === option.id;
                             const IconComponent = ICON_MAP[option.id] || Images;
-=======
-                            const needsSaveData = ['continue_game', 'trainer_card'].includes(option.id);
-                            const isDisabled = needsSaveData && !hasSaveData;
-                            const isActive = activeContent.id === option.id;
-                            const IconComponent = ICON_MAP[option.id] || HelpCircle;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
                             let clickHandler = null;
                             if (option.id === 'new_game') clickHandler = onNewGame;
                             else if (option.id === 'continue_game') clickHandler = onContinueGame;
                             else if (option.id === 'trainer_card') clickHandler = onOpenTrainerCard;
-<<<<<<< HEAD
                             else if (option.id === 'profile') clickHandler = onOpenProfile;
                             else if (option.id === 'albums') clickHandler = onOpenAlbums;
                             else if (option.id === 'shop') clickHandler = onOpenShop;
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
                             return (
                                 <button 
@@ -210,11 +182,7 @@ const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, hasSaveData })
                     <div className="absolute bottom-6 right-10 flex items-center gap-2 opacity-50">
                         <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
                         <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
-<<<<<<< HEAD
                             System Online // v0.7.0
-=======
-                            System Online // v0.6.0
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                         </span>
                     </div>
                 </div>
@@ -223,8 +191,4 @@ const MainMenu = ({ onNewGame, onContinueGame, onOpenTrainerCard, hasSaveData })
     );
 };
 
-<<<<<<< HEAD
 export default MainMenu;
-=======
-export default MainMenu;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

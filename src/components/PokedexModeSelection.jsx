@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, BookOpen, Skull, Play, ChevronLeft, ChevronRight } from 'lucide-react';
-<<<<<<< HEAD
 import { countRegisteredSpecies, normalizeSaveData } from '../utils/captureSystem';
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
 // --- CONFIGURACIÓN ---
 const ILLUSTRATIONS = {
@@ -47,17 +44,11 @@ const PokedexModeCard = React.memo(({ mode, isActive, index, onClick, currentCou
                 ${isActive ? 'w-48 h-64 -translate-y-4 z-10' : 'w-36 h-48 translate-y-2 opacity-40 hover:opacity-80 hover:-translate-y-0 z-0'}
             `}
         >
-<<<<<<< HEAD
             <div
                 style={isActive ? { boxShadow: `0 0 30px ${glowColor}` } : undefined}
                 className={`
                 absolute inset-0 bg-[#020617] overflow-hidden transform skew-x-[-10deg] border-2 transition-all duration-300
                 ${isActive ? borderColor : 'border-slate-700 grayscale'}
-=======
-            <div className={`
-                absolute inset-0 bg-[#020617] overflow-hidden transform skew-x-[-10deg] border-2 transition-all duration-300
-                ${isActive ? `${borderColor} shadow-[0_0_30px_${glowColor}]` : 'border-slate-700 grayscale'}
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
             `}>
                 <div className="absolute inset-0 bg-[#020617] flex items-center justify-center overflow-hidden">
                     {isActive && (
@@ -101,11 +92,7 @@ const PokedexModeSelection = ({ onBack, onSelectMode, capturedData, hardCaptured
   
   const getCount = useCallback((data) => {
       if (!data) return 0;
-<<<<<<< HEAD
       return countRegisteredSpecies(normalizeSaveData(data));
-=======
-      return Array.isArray(data) ? data.length : Object.values(data).filter(x => x === true).length;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   }, []);
 
   useEffect(() => {
@@ -123,11 +110,7 @@ const PokedexModeSelection = ({ onBack, onSelectMode, capturedData, hardCaptured
   const handleCardClick = useCallback((index) => setSelectedIndex(index), []);
 
   return (
-<<<<<<< HEAD
     <div className="aaa-pokedex-mode-selection w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
-=======
-    <div className="w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       {/* FONDOS */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 z-0"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.10)_1px,transparent_1px)] bg-[size:40px_40px] z-0 pointer-events-none"></div>
@@ -203,8 +186,4 @@ const PokedexModeSelection = ({ onBack, onSelectMode, capturedData, hardCaptured
   );
 };
 
-<<<<<<< HEAD
 export default PokedexModeSelection;
-=======
-export default PokedexModeSelection;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

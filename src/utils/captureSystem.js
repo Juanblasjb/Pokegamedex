@@ -25,12 +25,14 @@ export const getCaptureRecord = (saveData, pokemonId) => {
   }
 
   if (raw === 'unlocked') {
-    return { registered: true, owned: false, specimen: null, captures: 0, specialUnlock: true };
+    return { registered: false, owned: false, specimen: null, captures: 0, specialUnlock: true };
   }
 
   if (raw && typeof raw === 'object') {
     return {
-      registered: Boolean(raw.registered || raw.owned || raw.specimen),
+      // An encounter unlock grants access to the Quiz, never a Pokédex entry.
+      // This also migrates prior special unlocks that were stored as registered.
+      registered: Boolean(raw.owned || raw.specimen || raw.captures > 0 || (raw.registered && !raw.specialUnlock)),
       owned: Boolean(raw.owned),
       specimen: raw.specimen || null,
       captures: raw.captures || (raw.owned ? 1 : 0),
@@ -115,15 +117,16 @@ export const registerCapture = (saveData, pokemon) => {
   };
 };
 
-export const registerSpecialUnlock = (saveData, pokemonId) => ({
+export const unlockQuizEncounter = (saveData, pokemonId) => ({
   ...saveData,
   [pokemonId]: {
     ...getCaptureRecord(saveData, pokemonId),
-    registered: true,
-    owned: false,
     specialUnlock: true,
   },
 });
+
+// Backwards-compatible alias for any older consumer of the capture module.
+export const registerSpecialUnlock = unlockQuizEncounter;
 
 export const releasePokemon = (saveData, pokemonId) => {
   const current = getCaptureRecord(saveData, pokemonId);

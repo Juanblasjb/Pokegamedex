@@ -10,7 +10,6 @@ const OAK_IMAGES = {
     undefined: '/assets/gym_leaders/oak_default.png' 
 };
 
-const sfx = new Audio('/assets/sounds/professor-oaks-lab.mp3');
 
 const ProfessorOakOverlay = ({ messages, onFinished }) => {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);

@@ -130,11 +130,7 @@ const UnlockRocketModal = ({ onClose }) => {
 
             {/* Descripción */}
             <p className="text-slate-300 text-xs font-medium mt-6 max-w-sm mx-auto leading-relaxed border-t border-red-900/50 pt-4 px-4">
-<<<<<<< HEAD
                 Registraste 15 especies. Una organización criminal ha comenzado a moverse por Kanto. ¡Ten cuidado!
-=======
-                Has llamado la atención con tus 15 capturas. Una organización criminal ha comenzado a moverse por Kanto. ¡Ten cuidado!
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
             </p>
         </div>
 
@@ -156,8 +152,4 @@ const UnlockRocketModal = ({ onClose }) => {
   );
 };
 
-<<<<<<< HEAD
 export default UnlockRocketModal;
-=======
-export default UnlockRocketModal;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

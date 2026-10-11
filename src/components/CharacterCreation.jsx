@@ -2,16 +2,10 @@ import React, { useState } from 'react';
 import { Lock, ArrowLeft, User, ChevronRight } from 'lucide-react';
 import { availableSkins } from './skins'; 
 
-<<<<<<< HEAD
 const CharacterCreation = ({ onProfileCreate, onGoBack, wardrobeProfile, onSkinSave }) => {
   const [profileName, setProfileName] = useState('');
   const [selectedSkin, setSelectedSkin] = useState(availableSkins.find(s => s.id === wardrobeProfile?.skin) || availableSkins.find(s => !s.locked));
   const canConfirm = wardrobeProfile ? !selectedSkin.locked : Boolean(profileName.trim());
-=======
-const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
-  const [profileName, setProfileName] = useState('');
-  const [selectedSkin, setSelectedSkin] = useState(availableSkins.find(s => !s.locked));
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   const handleBackAndReset = () => {
     setProfileName(''); 
@@ -20,13 +14,10 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
   };
 
   const handleStartGame = () => {
-<<<<<<< HEAD
     if (wardrobeProfile) {
       if (!selectedSkin.locked) onSkinSave(selectedSkin.id);
       return;
     }
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     if (profileName.trim()) {
       onProfileCreate(profileName.trim(), selectedSkin.id);
       setProfileName('');
@@ -35,11 +26,7 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
   };
 
   return (
-<<<<<<< HEAD
     <div className={`aaa-character-creation ${wardrobeProfile ? 'trainer-wardrobe' : ''} w-screen h-screen flex bg-[#0f172a] text-white overflow-hidden font-sans selection:bg-cyan-500 selection:text-white`}>
-=======
-    <div className="w-screen h-screen flex bg-[#0f172a] text-white overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       
       {/* --- 1. FONDOS GLOBALES (UNIFORMIDAD) --- */}
       
@@ -81,12 +68,8 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
         <div className="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
           <div className="grid grid-cols-2 gap-3">
             {availableSkins.map(skin => (
-<<<<<<< HEAD
               <div role={wardrobeProfile ? 'button' : undefined} tabIndex={wardrobeProfile && !skin.locked ? 0 : undefined} aria-label={wardrobeProfile ? skin.name : undefined} aria-pressed={wardrobeProfile ? selectedSkin.id === skin.id : undefined}
                 onKeyDown={e => { if (wardrobeProfile && !skin.locked && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setSelectedSkin(skin); } }}
-=======
-              <div 
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 key={skin.id}
                 onClick={() => !skin.locked && setSelectedSkin(skin)}
                 className={`
@@ -97,12 +80,8 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
                     ${skin.locked ? 'grayscale cursor-not-allowed opacity-40' : ''}
                 `}
               >
-<<<<<<< HEAD
                 {/* Keep headroom inside the clipped tile even during hover zoom. */}
                 <img src={skin.iconUrl} alt={skin.name} className="w-full h-full object-contain origin-bottom translate-y-[7%] scale-90 transition-transform duration-500 group-hover:scale-100" />
-=======
-                <img src={skin.iconUrl} alt={skin.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 
                 {skin.locked && (
                   <div className="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-[2px]">
@@ -157,7 +136,6 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
         <div className="absolute top-0 right-0 bottom-0 w-96 p-12 flex flex-col justify-center items-end z-30 pointer-events-none">
             
             {/* --- INPUT GROUP --- */}
-<<<<<<< HEAD
             {wardrobeProfile ? (
               <div className="wardrobe-details pointer-events-auto mb-8 w-full">
                 <p className="text-cyan-400 text-xs uppercase font-bold">Vestuario</p>
@@ -169,9 +147,6 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
                 </dl>
               </div>
             ) : <div className="pointer-events-auto mb-8 flex flex-col items-end gap-2 group w-full">
-=======
-            <div className="pointer-events-auto mb-8 flex flex-col items-end gap-2 group w-full">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 
                 {/* Header del Input */}
                 <div className="flex items-center gap-2 opacity-80 group-focus-within:opacity-100 transition-opacity">
@@ -202,38 +177,23 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
                 <p className="text-[9px] text-slate-500 font-mono text-right tracking-wider">
                     {profileName.length}/12 CHARS
                 </p>
-<<<<<<< HEAD
             </div>}
-=======
-            </div>
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
             {/* --- BOTÓN CONFIRMAR --- */}
             <div className="pointer-events-auto h-14 flex items-center justify-end w-full">
                 <button
                     onClick={handleStartGame}
-<<<<<<< HEAD
                     disabled={!canConfirm}
                     className={`
                         group relative px-8 py-3 rounded-tr-xl rounded-bl-xl border-r-4 shadow-lg transition-all duration-300 overflow-hidden
                         ${!canConfirm
-=======
-                    disabled={!profileName.trim()}
-                    className={`
-                        group relative px-8 py-3 rounded-tr-xl rounded-bl-xl border-r-4 shadow-lg transition-all duration-300 overflow-hidden
-                        ${!profileName.trim() 
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                             ? 'bg-slate-800/80 border-slate-600 text-slate-600 cursor-not-allowed grayscale' 
                             : 'bg-gradient-to-l from-cyan-700 to-blue-700 text-white border-cyan-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] active:scale-95'}
                     `}
                 >
                     <div className="flex items-center gap-2 relative z-10">
                         <span className="text-sm font-black italic uppercase tracking-widest">
-<<<<<<< HEAD
                             {wardrobeProfile ? 'Equipar skin' : 'Confirmar'}
-=======
-                            Confirmar
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                         </span>
                         <ChevronRight size={18} className={`transition-transform duration-300 ${profileName.trim() ? 'group-hover:translate-x-1' : ''}`} />
                     </div>
@@ -251,8 +211,4 @@ const CharacterCreation = ({ onProfileCreate, onGoBack }) => {
   );
 };
 
-<<<<<<< HEAD
 export default CharacterCreation;
-=======
-export default CharacterCreation;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

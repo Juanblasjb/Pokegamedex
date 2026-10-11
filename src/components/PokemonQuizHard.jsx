@@ -7,9 +7,9 @@ const TOTAL_QUESTIONS = 15;
 const INITIAL_TIME = 180; // 3 Minutos en segundos
 const MAX_LIVES = 3;
 
-const PokemonQuizHard = ({ onWin, onLose, onBack }) => {
+const PokemonQuizHard = ({ onLose }) => {
   // --- ESTADOS DE JUEGO ---
-  const [questions, setQuestions] = useState([]); // Aquí cargarías tus 15 preguntas
+  const [, setQuestions] = useState([]); // Aquí cargarías tus 15 preguntas
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [lives, setLives] = useState(MAX_LIVES);
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);

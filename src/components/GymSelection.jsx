@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Lock, MapPin, Swords, Play, X, Check, AlertTriangle } from 'lucide-react';
 import { GYM_DATA } from "../data/gymsData";
 import { availableSkins } from './skins';
-<<<<<<< HEAD
 import { countRegisteredSpecies, normalizeSaveData } from '../utils/captureSystem';
 
 const GymSelection = ({
@@ -15,46 +14,21 @@ const GymSelection = ({
   modeLabels = {},
   debugUnlockAllNodes = false,
 }) => {
-=======
-
-const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   const [travelNodeId, setTravelNodeId] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
 
   // --- 1. DATOS DEL USUARIO ---
-<<<<<<< HEAD
   const currentProgress = profile[progressKey] || 0;
-=======
-  const currentProgress = profile.gymProgress || 0; 
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   const playerSkin = availableSkins.find(s => s.id === profile.skin) || availableSkins[0];
 
   // [CORRECCIÓN CRÍTICA] Lógica de conteo compatible con Objetos { id: true }
   const safeCapturedCount = React.useMemo(() => {
-<<<<<<< HEAD
     if (capturedData) return countRegisteredSpecies(normalizeSaveData(capturedData));
 
     // Fallback: Intentar leer desde el profile si la prop falló
     if (profile) {
         if (profile.captured && typeof profile.captured === 'object') {
              return countRegisteredSpecies(normalizeSaveData(profile.captured));
-=======
-    // 1. Si viene como OBJETO (formato TrainerCard) -> Contamos los 'true'
-    if (capturedData && typeof capturedData === 'object' && !Array.isArray(capturedData)) {
-        return Object.values(capturedData).filter(status => status === true).length;
-    }
-
-    // 2. Si viene como ARRAY (formato lista simple)
-    if (Array.isArray(capturedData)) {
-        return capturedData.length;
-    }
-
-    // 3. Fallback: Intentar leer desde el profile si la prop falló
-    if (profile) {
-        if (profile.captured && typeof profile.captured === 'object') {
-             return Object.values(profile.captured).filter(status => status === true).length;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         }
         if (Array.isArray(profile.capturedPokemon)) return profile.capturedPokemon.length;
     }
@@ -65,30 +39,18 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
   // --- 2. EFECTO INICIAL ---
   useEffect(() => {
     if (!travelNodeId) {
-<<<<<<< HEAD
         const startNode = nodes[Math.min(currentProgress, nodes.length - 1)];
         setTravelNodeId(startNode.id);
         setSelectedNode(startNode);
     }
   }, [currentProgress, nodes, travelNodeId]);
-=======
-        const startNode = GYM_DATA[Math.min(currentProgress, GYM_DATA.length - 1)];
-        setTravelNodeId(startNode.id);
-        setSelectedNode(startNode);
-    }
-  }, [currentProgress, travelNodeId]);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   // --- 3. MOTOR DE REGLAS ---
   const checkUnlockStatus = (node) => {
     // [ELIMINADO] Ya no existe la excepción "if (!node.isGym)". 
     // Ahora Pueblo Paleta (Tutorial) cuenta como un nivel más que se debe superar.
 
-<<<<<<< HEAD
     const nodeIndex = nodes.findIndex(n => n.id === node.id);
-=======
-    const nodeIndex = GYM_DATA.findIndex(n => n.id === node.id);
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     
     // 1. ¿Ya ganaste este nivel? 
     // Si tu progreso es 1, ya ganaste el nivel 0. (1 > 0 es True)
@@ -102,7 +64,6 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
     
     // 3. ¿Bloqueado futuro?
     // Si el índice del nodo es mayor que tu progreso actual.
-<<<<<<< HEAD
     const isLockedByProgression = !debugUnlockAllNodes && nodeIndex > currentProgress;
     
     // 4. Regla de Capturas
@@ -110,20 +71,12 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
     const hasEnoughCaptures = debugUnlockAllNodes || safeCapturedCount >= minCaptures;
     const minLevel = node.minLevel || 0;
     const hasEnoughLevel = debugUnlockAllNodes || (profile.level || 1) >= minLevel;
-=======
-    const isLockedByProgression = nodeIndex > currentProgress;
-    
-    // 4. Regla de Capturas
-    const minCaptures = node.minCaptures || 0;
-    const hasEnoughCaptures = safeCapturedCount >= minCaptures;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
     return {
         isPassed, 
         isCurrentChallenge,
         isLockedByProgression, 
         hasEnoughCaptures,
-<<<<<<< HEAD
         hasEnoughLevel,
         minCaptures,
         minLevel,
@@ -131,13 +84,6 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
         // a) Es el reto actual Y tienes las capturas.
         // b) Ya lo pasaste (puedes volver a entrar).
         canEnter: debugUnlockAllNodes || (isCurrentChallenge && hasEnoughCaptures && hasEnoughLevel) || isPassed
-=======
-        minCaptures,
-        // CONDICIÓN DE ENTRADA: 
-        // a) Es el reto actual Y tienes las capturas.
-        // b) Ya lo pasaste (puedes volver a entrar).
-        canEnter: (isCurrentChallenge && hasEnoughCaptures) || isPassed
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     };
   };
 
@@ -150,19 +96,11 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
       }
   };
 
-<<<<<<< HEAD
   const currentNodeObj = nodes.find(n => n.id === travelNodeId) || nodes[0];
   const selectedStatus = selectedNode ? checkUnlockStatus(selectedNode) : null;
 
   return (
     <div className="aaa-gym-selection w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
-=======
-  const currentNodeObj = GYM_DATA.find(n => n.id === travelNodeId) || GYM_DATA[0];
-  const selectedStatus = selectedNode ? checkUnlockStatus(selectedNode) : null;
-
-  return (
-    <div className="w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       
       {/* --- FONDOS --- */}
       <div className="absolute inset-0 bg-[#0f172a] z-0"></div>
@@ -204,11 +142,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
             <div className="absolute bottom-2 left-4 z-20">
                 <h2 className="text-2xl font-black italic text-white uppercase tracking-tighter drop-shadow-lg leading-none">{selectedNode.leader}</h2>
                 <span className="text-[9px] font-bold text-cyan-400 uppercase tracking-widest">
-<<<<<<< HEAD
                     {selectedNode.isTutorial ? 'Mentor Pokémon' : (selectedNode.role || modeLabels.role || `Líder de ${selectedNode.type}`)}
-=======
-                    {selectedNode.isTutorial ? 'Mentor Pokémon' : `Líder de ${selectedNode.type}`}
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 </span>
             </div>
         </>
@@ -255,18 +189,13 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                                 )}
 
                                 {/* Requisito 2: Capturas */}
-<<<<<<< HEAD
                                 {selectedStatus.minCaptures > 0 && <div className="flex justify-between items-center">
-=======
-                                <div className="flex justify-between items-center">
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                     <span className="text-[10px] text-slate-400 font-mono">
                                         {selectedNode.required > 0 ? '2.' : '1.'} Datos Pokédex
                                     </span>
                                     <span className={`text-[10px] font-mono font-bold ${selectedStatus.hasEnoughCaptures ? 'text-green-400' : 'text-orange-400'}`}>
                                         {safeCapturedCount}/{selectedStatus.minCaptures} REQ
                                     </span>
-<<<<<<< HEAD
                                 </div>}
                                 {selectedStatus.minLevel > 0 && <div className="flex justify-between items-center">
                                     <span className="text-[10px] text-slate-400 font-mono">Nivel entrenador</span>
@@ -274,42 +203,26 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                                         NIV. {profile.level || 1}/{selectedStatus.minLevel}
                                     </span>
                                 </div>}
-=======
-                                </div>
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                             </div>
                         )}
 
                         {/* Botones de Acción */}
-<<<<<<< HEAD
                         {(selectedNode.isGym || selectedNode.isTutorial) && (selectedStatus.isCurrentChallenge || debugUnlockAllNodes) && (
-=======
-                        {(selectedNode.isGym || selectedNode.isTutorial) && selectedStatus.isCurrentChallenge && (
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                             <div className="mt-2">
                                 {selectedStatus.canEnter ? (
                                     <button 
                                     onClick={() => onEnterGym(selectedNode.id)}
                                     className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black italic uppercase tracking-widest text-sm rounded border-t border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 animate-pulse-slow"
                                 >
-<<<<<<< HEAD
                                     {selectedNode.isTutorial ? 'COMENZAR TUTORIAL' : (modeLabels.action || 'INICIAR BATALLA')} <Play fill="currentColor" size={10} />
-=======
-                                    {selectedNode.isTutorial ? 'COMENZAR TUTORIAL' : 'INICIAR BATALLA'} <Play fill="currentColor" size={10} />
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                     </button>
                                 ) : (
                                     <button 
                                         disabled
                                         className="w-full py-3 bg-slate-800/50 text-slate-500 border border-slate-700 font-black italic uppercase tracking-widest text-xs rounded cursor-not-allowed flex items-center justify-center gap-2"
                                     >
-<<<<<<< HEAD
                                         {selectedStatus.hasEnoughCaptures && selectedStatus.hasEnoughLevel ? <Lock size={12} /> : <AlertTriangle size={12} />}
                                         {!selectedStatus.hasEnoughLevel ? 'NIVEL INSUFICIENTE' : selectedStatus.hasEnoughCaptures ? 'BLOQUEADO' : 'FALTAN DATOS'}
-=======
-                                        {selectedStatus.hasEnoughCaptures ? <Lock size={12} /> : <AlertTriangle size={12} />}
-                                        {selectedStatus.hasEnoughCaptures ? 'BLOQUEADO' : 'FALTAN DATOS'}
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                     </button>
                                 )}
                             </div>
@@ -318,11 +231,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                         {/* Mensaje de completado */}
                         {selectedStatus.isPassed && (selectedNode.isGym || selectedNode.isTutorial) && (
                         <div className="w-full py-2 bg-green-900/20 border border-green-900/50 text-green-500 font-bold uppercase tracking-widest text-xs rounded flex items-center justify-center gap-2">
-<<<<<<< HEAD
                         <Check size={14} /> {selectedNode.isTutorial ? 'TUTORIAL COMPLETADO' : (modeLabels.completed || 'GIMNASIO VENCIDO')}
-=======
-                        <Check size={14} /> {selectedNode.isTutorial ? 'TUTORIAL COMPLETADO' : 'GIMNASIO VENCIDO'}
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                         </div>
                         )}
                     </div>
@@ -356,11 +265,7 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
             </div>
 
             {/* NODOS */}
-<<<<<<< HEAD
             {nodes.map((node) => {
-=======
-            {GYM_DATA.map((node) => {
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 const status = checkUnlockStatus(node);
                 const isSelected = selectedNode?.id === node.id;
 
@@ -373,11 +278,8 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
                                 w-10 h-10 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 relative bg-slate-900
                                 ${status.isPassed 
                                     ? 'border-blue-600 text-blue-600' 
-<<<<<<< HEAD
                                     : debugUnlockAllNodes
                                         ? 'border-cyan-400 text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.45)]'
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                                     : status.isCurrentChallenge 
                                         ? (status.hasEnoughCaptures 
                                             ? 'border-cyan-400 text-cyan-400 animate-pulse shadow-[0_0_15px_cyan]' 
@@ -406,8 +308,4 @@ const GymSelection = ({ profile, capturedData, onBack, onEnterGym }) => {
   );
 };
 
-<<<<<<< HEAD
 export default GymSelection;
-=======
-export default GymSelection;
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

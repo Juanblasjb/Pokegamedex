@@ -2,16 +2,19 @@ import React, { useEffect } from 'react';
 import { AlertTriangle, CheckCircle, Info, XCircle, Terminal, ChevronRight } from 'lucide-react';
 
 const GameAlert = ({ isOpen, title, message, type = 'info', onClose }) => {
-  if (!isOpen) return null;
+
 
   // Cerrar con tecla Enter o Escape
   useEffect(() => {
+    if (!isOpen) return;
     const handleKeyDown = (e) => {
       if (e.key === 'Enter' || e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
 
   // Configuración de estilos y colores según el tipo
   const styles = {

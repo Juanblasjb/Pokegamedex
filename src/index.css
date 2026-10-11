@@ -274,7 +274,6 @@
   animation: text-stroke-pulse 3s infinite;
 }
 
-<<<<<<< HEAD
 /* --- RESPONSIVE AAA HUD: tablet y mobile únicamente.
    Desktop queda protegido: ninguna regla de este bloque aplica sobre 1024px. --- */
 @media (max-width: 1024px) {
@@ -994,5 +993,3 @@
     bottom: 0.75rem !important;
   }
 }
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
