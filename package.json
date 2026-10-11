@@ -1,22 +1,18 @@
+
 {
   "name": "pokedex-quiz",
   "version": "0.1.0",
   "private": true,
-  "type": "module",{
+  "type": "module",
   "scripts": {
-    "build": "vite build"
-  }
-}
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "lucide-react": "^0.553.0",
-<<<<<<< HEAD
     "motion": "^13.4.2",
     "page-flip": "^2.0.7",
-=======
->>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
