@@ -31,6 +31,15 @@ export const availableSkins = [
     imageUrl: '/assets/Skins/Classic_Ash_Skin.png', // Imagen grande
     locked: false,
   },{
+<<<<<<< HEAD
+=======
+    id: 'giovanni',
+    name: 'Red Líder Rocket',
+    iconUrl: '/assets/icons/Icon_Giovanni_Skin.png', // Icono para la miniatura
+    imageUrl: '/assets/Skins/Giovanni_Skin.png', // Imagen grande
+    locked: false,
+  },{
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     id: 'ace_trainer',
     name: 'Entrenador Guay',
     iconUrl: '/assets/icons/Icon_Ace_Trainer_Skin.png', // Icono para la miniatura
@@ -49,18 +58,27 @@ export const availableSkins = [
     imageUrl: '/assets/Skins/Oak_Skin.png', // Imagen grande
     locked: false,
   },{
+<<<<<<< HEAD
     id: 'montañero',
+=======
+    id: 'hisui',
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     name: 'Red Montañero',
     iconUrl: '/assets/icons/Icon_Montañero_Skin.png', // Icono para la miniatura
     imageUrl: '/assets/Skins/Red_Montañero_Skin.png', // Imagen grande
     locked: false,
   },{
+<<<<<<< HEAD
     id: 'marinero',
+=======
+    id: 'shinobi',
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     name: 'Red Marinero S.S. Anne',
     iconUrl: '/assets/icons/Icon_Marinero_Skin.png', // Icono para la miniatura
     imageUrl: '/assets/Skins/Red_Marinero_Skin.png', // Imagen grande
     locked: false,
   },{
+<<<<<<< HEAD
     id: 'fisher',
     name: 'Red Pescador',
     iconUrl: '/assets/icons/Icon_Pescador_Skin.png', // Icono para la miniatura
@@ -137,6 +155,12 @@ export const availableSkins = [
     name: 'Red Guajolote Macias',
     iconUrl: '/assets/icons/Icon_Guajolote_Skin.png', // Icono para la miniatura
     imageUrl: '/assets/Skins/Guajolote_Skin.png', // Imagen grande
+=======
+    id: 'santa',
+    name: 'Santa Claus',
+    iconUrl: '/assets/icons/Icon_Santa_Skin.png', // Icono para la miniatura
+    imageUrl: '/assets/Skins/Santa_Skin.png', // Imagen grande
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     locked: false,
   }
 ];

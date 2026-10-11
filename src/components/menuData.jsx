@@ -3,8 +3,13 @@ const POKEMON_IMAGES = {
     new_game: '/assets/pokemon/normal/3.png', // Venusaur
     continue_game: '/assets/pokemon/normal/6.png', // Charizard
     trainer_card: '/assets/pokemon/normal/9.png', // Blastoise
+<<<<<<< HEAD
     profile: '/assets/pokemon/normal/133.png', // Eevee
     albums: '/assets/pokemon/normal/65.png', // Alakazam
+=======
+    options: '/assets/pokemon/normal/137.png', // Porygon
+    help: '/assets/pokemon/normal/65.png', // Alakazam
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     shop: '/assets/pokemon/normal/52.png', // Meowth
 };
 
@@ -28,12 +33,17 @@ export const menuOptions = [
     {
         id: 'trainer_card',
         label: 'Ficha Entrenador',
+<<<<<<< HEAD
         mainTitle: 'FICHA DE ENTRENADOR',
+=======
+        mainTitle: 'PERFIL DE USUARIO',
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         subtitle: 'Accede a tus estadísticas, medallas obtenidas y gestión del equipo Pokémon.',
         modeTitle: 'IDENTIFICACIÓN',
         pokemonImage: POKEMON_IMAGES.trainer_card,
     },
     {
+<<<<<<< HEAD
         id: 'profile',
         label: 'Mi Perfil',
         mainTitle: 'MI PERFIL',
@@ -48,6 +58,22 @@ export const menuOptions = [
         subtitle: 'Organiza y consulta tus colecciones de láminas Pokémon.',
         modeTitle: 'COLECCIÓN',
         pokemonImage: POKEMON_IMAGES.albums,
+=======
+        id: 'options',
+        label: 'Opciones',
+        mainTitle: 'CONFIGURACIÓN',
+        subtitle: 'Ajusta los parámetros del sistema, audio y visualización de la interfaz.',
+        modeTitle: 'AJUSTES',
+        pokemonImage: POKEMON_IMAGES.options,
+    },
+    {
+        id: 'help',
+        label: 'Ayuda',
+        mainTitle: 'BASE DE CONOCIMIENTO',
+        subtitle: 'Consulta la guía de operaciones y mecánicas de combate.',
+        modeTitle: 'INFORMACIÓN',
+        pokemonImage: POKEMON_IMAGES.help,
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     },
     {
         id: 'shop',
@@ -60,8 +86,16 @@ export const menuOptions = [
 ];
 
 export const defaultContent = {
+<<<<<<< HEAD
     mainTitle: 'POKÉDEX v.0.7.0',
     subtitle: 'Sistema operativo listo. Selecciona un módulo para comenzar.',
     modeTitle: 'ESPERANDO COMANDO',
     pokemonImage: POKEMON_IMAGES.default,
 };
+=======
+    mainTitle: 'POKÉDEX v.0.6.0',
+    subtitle: 'Sistema operativo listo. Selecciona un módulo para comenzar.',
+    modeTitle: 'ESPERANDO COMANDO',
+    pokemonImage: POKEMON_IMAGES.default,
+};
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

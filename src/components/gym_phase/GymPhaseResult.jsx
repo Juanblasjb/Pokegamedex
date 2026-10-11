@@ -1,6 +1,9 @@
 import React from 'react';
 import { Trophy, XCircle, Clock, Zap, Coins, Skull, CheckCircle2 } from 'lucide-react';
+<<<<<<< HEAD
 import CurrencyAmount from '../CurrencyAmount';
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
 
 const GymPhaseResult = ({ 
@@ -86,7 +89,11 @@ const GymPhaseResult = ({
                         />
                         <DataRow 
                             label="Recompensa" 
+<<<<<<< HEAD
                             value={<CurrencyAmount amount={success ? 500 : 0} />} 
+=======
+                            value={`₽ ${success ? '500' : '0'}`} 
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                             icon={Coins} 
                             isLast 
                         />
@@ -108,7 +115,11 @@ const GymPhaseResult = ({
                         />
                         <DataRow 
                             label="Recompensa" 
+<<<<<<< HEAD
                             value={<CurrencyAmount amount={success ? 1000 : 0} />} 
+=======
+                            value={`₽ ${success ? '1000' : '0'}`} 
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                             icon={Coins} 
                             isLast 
                         />
@@ -131,4 +142,8 @@ const GymPhaseResult = ({
   );
 };
 
+<<<<<<< HEAD
 export default GymPhaseResult;
+=======
+export default GymPhaseResult;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

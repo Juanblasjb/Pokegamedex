@@ -5,18 +5,24 @@ import CharacterCreation from './components/CharacterCreation';
 import PokemonQuiz from './PokemonQuiz';
 import LoadingScreen from './components/LoadingScreen';
 import TrainerCard from './components/TrainerCard';
+<<<<<<< HEAD
 import TrainerProfile from './components/TrainerProfile';
 import GameModeSelection from './components/GameModeSelection';
 import GymSelection from './components/GymSelection';
 import RocketSelection from './components/RocketSelection';
 import RocketBattle from './components/RocketBattle';
 import EliteSelection from './components/EliteSelection';
+=======
+import GameModeSelection from './components/GameModeSelection';
+import GymSelection from './components/GymSelection';
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 import PokedexModeSelection from './components/PokedexModeSelection';
 import PokemonQuizHard from './components/PokemonQuizHard';
 import UnlockModal from './components/UnlockModal'; 
 import GymBattle from './components/GymBattle';
 import UnlockRocketModal from './components/UnlockRocketModal';
 import GameAlert from './components/GameAlert';
+<<<<<<< HEAD
 import Shop from './components/Shop';
 import Albums from './components/Albums';
 import LevelUpModal from './components/LevelUpModal';
@@ -24,6 +30,8 @@ import { countRegisteredSpecies, isPokemonOwned, normalizeSaveData, registerCapt
 import { awardBattleExperience, getLevelRewards, normalizeTrainerProfile } from './utils/trainerProgress';
 import { ELITE_DATA } from './data/eliteData';
 import { ROCKET_DATA, ROCKET_SPECIAL_UNLOCKS } from './data/rocketData';
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
 function App() {
   // --- ESTADOS DE NAVEGACIÓN Y SISTEMA ---
@@ -32,6 +40,7 @@ function App() {
   const [currentProfile, setCurrentProfile] = useState(null);
   const [isCreatingMode, setIsCreatingMode] = useState(true);
   const [selectedGameMode, setSelectedGameMode] = useState('pokedex');  
+<<<<<<< HEAD
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showRocketUnlockModal, setShowRocketUnlockModal] = useState(false);
   const [levelUpNotice, setLevelUpNotice] = useState(null);
@@ -40,12 +49,21 @@ function App() {
   // Nuevo estado para controlar qué gimnasio se seleccionó
   const [selectedGymId, setSelectedGymId] = useState(null);
   const [selectedRocketNodeId, setSelectedRocketNodeId] = useState(null);
+=======
+  const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [showRocketUnlockModal, setShowRocketUnlockModal] = useState(false);
+  
+  // Nuevo estado para controlar qué gimnasio se seleccionó
+  const [selectedGymId, setSelectedGymId] = useState(null);
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   
   // --- ESTADO DE DATOS ---
   const [currentSaveData, setCurrentSaveData] = useState({});
 
   const [profiles, setProfiles] = useState(() => {
     const savedProfiles = localStorage.getItem('pokemonQuizProfiles');
+<<<<<<< HEAD
     return savedProfiles ? JSON.parse(savedProfiles).map(normalizeTrainerProfile) : [];
   });
   const hasSaveData = profiles.length > 0;
@@ -53,6 +71,11 @@ function App() {
   const shopProfile = currentProfile
     || profiles.find(profile => String(profile.id) === lastActiveProfileId)
     || profiles[profiles.length - 1];
+=======
+    return savedProfiles ? JSON.parse(savedProfiles) : [];
+  });
+  const hasSaveData = profiles.length > 0;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   // --- ESTADO DE ALERTAS PERSONALIZADAS ---
   const [alertConfig, setAlertConfig] = useState({
@@ -72,6 +95,7 @@ function App() {
 
   // --- LÓGICA DE DESBLOQUEO ---
   const handleGameCapture = (totalCaptures) => {
+<<<<<<< HEAD
     const newSaveData = normalizeSaveData(JSON.parse(localStorage.getItem('pokemonQuizSaveData') || '{}'));
     setCurrentSaveData(newSaveData);
 
@@ -97,15 +121,61 @@ function App() {
   };
 
   // Auto-guardado del progreso de captura antes de cerrar la aplicación.
+=======
+    const newSaveData = JSON.parse(localStorage.getItem('pokemonQuizSaveData') || '{}');
+    setCurrentSaveData(newSaveData);
+
+    if (currentProfile && !currentProfile.gymUnlocked && totalCaptures >= 5) {
+        setShowUnlockModal(true);
+        const updatedProfile = { ...currentProfile, gymUnlocked: true };
+        setCurrentProfile(updatedProfile);
+        
+        const updatedProfilesList = profiles.map(p => 
+            p.id === updatedProfile.id ? updatedProfile : p
+        );
+        setProfiles(updatedProfilesList);
+        localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
+    }
+
+    if (currentProfile && !currentProfile.rocketUnlocked && totalCaptures >= 15) {
+        setShowRocketUnlockModal(true); 
+        const updatedProfile = { ...currentProfile, rocketUnlocked: true };
+        setCurrentProfile(updatedProfile);
+        
+        const updatedProfilesList = profiles.map(p => 
+            p.id === updatedProfile.id ? updatedProfile : p
+        );
+        setProfiles(updatedProfilesList);
+        localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
+    }
+  };
+
+  // Auto-guardado
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (currentProfile) {
         const currentProgress = localStorage.getItem('pokemonQuizSaveData');
         if (currentProgress) localStorage.setItem(`save_file_${currentProfile.id}`, currentProgress);
+<<<<<<< HEAD
+=======
+        
+        if (sessionStartTime) {
+            const now = Date.now();
+            const duration = now - sessionStartTime;
+            const savedProfiles = JSON.parse(localStorage.getItem('pokemonQuizProfiles') || '[]');
+            const updatedProfiles = savedProfiles.map(p => {
+                if (p.id === currentProfile.id) return { ...p, playTime: (p.playTime || 0) + duration };
+                return p;
+            });
+            localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfiles));
+        }
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+<<<<<<< HEAD
   }, [currentProfile]);
 
   // El reloj pertenece al perfil activo, no a una pantalla concreta. De este
@@ -136,19 +206,29 @@ function App() {
     const timer = window.setInterval(recordElapsedTime, 1000);
     return () => window.clearInterval(timer);
   }, [currentProfile?.id]);
+=======
+  }, [currentProfile, sessionStartTime]);
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   const navigateTo = (view) => setActiveView(view);
 
   const startGame = (mode = 'pokedex') => {
     setSelectedGameMode(mode);
     setGameId((prevId) => prevId + 1);
+<<<<<<< HEAD
+=======
+    setSessionStartTime(Date.now());
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     setActiveView('loading');
     setTimeout(() => {
       if (mode === 'pokedex') setActiveView('pokedex');
       else if (mode === 'pokedex_hard') setActiveView('pokedex_hard');
       else if (mode === 'gym') setActiveView('gym_map');
+<<<<<<< HEAD
       else if (mode === 'rocket') setActiveView('rocket_map');
       else if (mode === 'elite') setActiveView('elite_map');
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       else { 
           // CAMBIO AQUÍ
           showAlert("SISTEMA EN CONSTRUCCIÓN", "Este módulo de simulación aún no está disponible.\nVuelve más tarde, entrenador.", "warning"); 
@@ -157,6 +237,7 @@ function App() {
     }, 4000);
   };
 
+<<<<<<< HEAD
   const handleUpdateProfile = (updatedProfile) => {
     let normalizedProfile = normalizeTrainerProfile(updatedProfile);
     const previousProfile = currentProfile?.id === normalizedProfile.id
@@ -182,6 +263,26 @@ function App() {
     setCurrentSaveData(normalized);
     localStorage.setItem('pokemonQuizSaveData', JSON.stringify(normalized));
     if (currentProfile?.id) localStorage.setItem(`save_file_${currentProfile.id}`, JSON.stringify(normalized));
+=======
+  const updateProfilePlayTime = () => {
+    if (currentProfile && sessionStartTime) {
+      const now = Date.now();
+      const sessionDuration = now - sessionStartTime;
+      const updatedProfile = { ...currentProfile, playTime: (currentProfile.playTime || 0) + sessionDuration };
+      setCurrentProfile(updatedProfile);
+      const updatedProfilesList = profiles.map(p => p.id === updatedProfile.id ? updatedProfile : p);
+      setProfiles(updatedProfilesList);
+      localStorage.setItem('pokemonQuizProfiles', JSON.stringify(updatedProfilesList));
+      setSessionStartTime(null); 
+    }
+  };
+
+  const handleUpdateProfile = (updatedProfile) => {
+    const newProfilesList = profiles.map(p => p.id === updatedProfile.id ? updatedProfile : p);
+    setProfiles(newProfilesList);
+    localStorage.setItem('pokemonQuizProfiles', JSON.stringify(newProfilesList));
+    setCurrentProfile(updatedProfile);
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   };
 
   // --- HANDLERS DE MENÚ ---
@@ -199,7 +300,11 @@ function App() {
       let targetProfile = profiles.find(p => p.id == lastActiveId) || profiles[profiles.length - 1];
       
       const savedDataStr = localStorage.getItem(`save_file_${targetProfile.id}`);
+<<<<<<< HEAD
       const savedData = normalizeSaveData(savedDataStr ? JSON.parse(savedDataStr) : {});
+=======
+      const savedData = savedDataStr ? JSON.parse(savedDataStr) : {};
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       
       setCurrentProfile(targetProfile);
       setCurrentSaveData(savedData);
@@ -209,6 +314,7 @@ function App() {
     }
   };
 
+<<<<<<< HEAD
   const handleOpenProfile = () => {
     if (currentProfile) {
       navigateTo('profile');
@@ -259,11 +365,17 @@ function App() {
     navigateTo('albums');
   };
 
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   // --- GESTIÓN DE PERFILES ---
   const handleCreateProfile = (profileName, skinId) => {
     if (profiles.length >= 8) return;
     
+<<<<<<< HEAD
     const newProfile = normalizeTrainerProfile({ 
+=======
+    const newProfile = { 
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         id: Date.now(), 
         name: profileName, 
         skin: skinId, 
@@ -274,7 +386,11 @@ function App() {
         eliteProgress: 0, 
         gymUnlocked: false,
         team: [] 
+<<<<<<< HEAD
     });
+=======
+    };
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
     const updatedProfiles = [...profiles, newProfile];
     
@@ -299,7 +415,11 @@ function App() {
   const handleSelectProfile = (profile) => {
     if (isCreatingMode) {
       if (window.confirm(`¿Reiniciar aventura de ${profile.name}?`)) {
+<<<<<<< HEAD
         const resetProfile = normalizeTrainerProfile({ ...profile, playTime: 0, startDate: Date.now(), companion: null, gymProgress: 0, eliteProgress: 0, gymUnlocked: false, rocketUnlocked: false, team: [], experience: 0, level: 1, money: 0, inventory: {}, boosts: {}, claimedAchievements: [] });
+=======
+        const resetProfile = { ...profile, playTime: 0, startDate: Date.now(), companion: null, gymProgress: 0, gymUnlocked: false, rocketUnlocked: false, team: [] };
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         const updatedProfiles = profiles.map(p => p.id === profile.id ? resetProfile : p);
         
         setProfiles(updatedProfiles);
@@ -315,9 +435,15 @@ function App() {
       }
     } else {
       const specificSaveDataStr = localStorage.getItem(`save_file_${profile.id}`);
+<<<<<<< HEAD
       const specificSaveData = normalizeSaveData(specificSaveDataStr ? JSON.parse(specificSaveDataStr) : {});
       
       const totalCaptures = countRegisteredSpecies(specificSaveData);
+=======
+      const specificSaveData = specificSaveDataStr ? JSON.parse(specificSaveDataStr) : {};
+      
+      const totalCaptures = Object.values(specificSaveData).filter(s => s === true).length;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       
       let updatedProfile = { ...profile };
       let hasUpdates = false;
@@ -329,7 +455,10 @@ function App() {
 
       if (totalCaptures >= 15 && !profile.rocketUnlocked) {
           updatedProfile.rocketUnlocked = true;
+<<<<<<< HEAD
           setShowRocketUnlockModal(true);
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
           hasUpdates = true;
       }
 
@@ -349,6 +478,22 @@ function App() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleExitGame = () => {
+    if (currentProfile) {
+      const currentProgress = localStorage.getItem('pokemonQuizSaveData');
+      if (currentProgress) {
+          localStorage.setItem(`save_file_${currentProfile.id}`, currentProgress);
+          setCurrentSaveData(JSON.parse(currentProgress));
+      }
+      updateProfilePlayTime(); 
+    }
+    setCurrentProfile(null);
+    navigateTo('menu');
+  };
+
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   // --- DEV TOOLS: CÓDIGO KONAMI ---
   useEffect(() => {
     const konamiCode = [
@@ -356,6 +501,7 @@ function App() {
       "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", 
       "b", "a"
     ];
+<<<<<<< HEAD
     const unlockNodesCode = ["ArrowUp", "ArrowDown", "ArrowUp", "ArrowDown", "j"];
     const restoreNodesCode = ["ArrowDown", "ArrowUp", "ArrowDown", "ArrowUp", "j"];
     let keyBuffer = [];
@@ -366,13 +512,34 @@ function App() {
       const successSound = new Audio('/assets/sounds/secret.mp3');
       successSound.volume = 0.5;
       successSound.play().catch(error => console.warn("Audio bloqueado", error));
+=======
+    
+    let keyIndex = 0;
+
+    const handleKeyDown = (e) => {
+      if (!currentProfile) return;
+
+      if (e.key === konamiCode[keyIndex]) {
+        keyIndex++;
+        if (keyIndex === konamiCode.length) {
+          activateDevCheat();
+          keyIndex = 0;
+        }
+      } else {
+        keyIndex = 0;
+      }
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     };
 
     const activateDevCheat = () => {
       // 1. Validaciones
       if (currentProfile.cheatUsed) return;
       
+<<<<<<< HEAD
       const currentCapturesCount = countRegisteredSpecies(currentSaveData);
+=======
+      const currentCapturesCount = Object.values(currentSaveData).filter(x => x === true).length;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       if (currentCapturesCount > 0) return;
 
       // 2. Lógica
@@ -382,7 +549,11 @@ function App() {
       for (let i = 0; i < 5; i++) {
         const randomIndex = Math.floor(Math.random() * allIds.length);
         const pokemonId = allIds[randomIndex];
+<<<<<<< HEAD
         newCaptures[pokemonId] = { registered: true, owned: true, specimen: null, captures: 1 };
+=======
+        newCaptures[pokemonId] = true;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
         allIds.splice(randomIndex, 1);
       }
 
@@ -391,7 +562,13 @@ function App() {
       localStorage.setItem(`save_file_${currentProfile.id}`, JSON.stringify(updatedSaveData));
       localStorage.setItem('pokemonQuizSaveData', JSON.stringify(updatedSaveData));
 
+<<<<<<< HEAD
       playSecretSound();
+=======
+      const successSound = new Audio('/assets/sounds/secret.mp3');
+      successSound.volume = 0.5;
+      successSound.play().catch(e => console.warn("Audio bloqueado", e));
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
       const updatedProfile = { ...currentProfile, cheatUsed: true };
       handleUpdateProfile(updatedProfile);
@@ -399,6 +576,7 @@ function App() {
       handleGameCapture(5);
     };
 
+<<<<<<< HEAD
     const handleKeyDown = (event) => {
       if (!currentProfile) return;
 
@@ -435,6 +613,8 @@ function App() {
       }
     };
 
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentProfile, currentSaveData]); 
@@ -446,6 +626,7 @@ function App() {
           <UnlockModal onClose={() => setShowUnlockModal(false)} />
        )}
 
+<<<<<<< HEAD
        {showRocketUnlockModal && !levelUpNotice && (
           <UnlockRocketModal onClose={() => setShowRocketUnlockModal(false)} />
        )}
@@ -463,6 +644,13 @@ function App() {
        <div className={`screen ${activeView === "shop" ? "visible" : "hidden"}`}>
          {activeView === 'shop' && <Shop onGoBack={() => { setCurrentProfile(null); navigateTo('menu'); }} profile={shopProfile} onProfileUpdate={handleUpdateProfile} />}
        </div>
+=======
+       {showRocketUnlockModal && (
+          <UnlockRocketModal onClose={() => setShowRocketUnlockModal(false)} />
+       )}
+
+       <div className={`screen ${activeView === "menu" ? "visible" : "hidden"}`}><MainMenu onNewGame={handleGoToNewGame} onContinueGame={handleGoToContinue} onOpenTrainerCard={handleOpenTrainerCard} hasSaveData={hasSaveData} /></div>
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
        
        <div className={`screen ${activeView === "game_mode_selection" ? "visible" : "hidden"}`}>
         {currentProfile && (
@@ -473,7 +661,10 @@ function App() {
                 onStartMode={(mode) => { if (mode === 'pokedex_difficulty_select') navigateTo('pokedex_difficulty'); else startGame(mode); }}
                 onBack={() => navigateTo('profile_selection')}
                 onGoToMenu={() => { setCurrentProfile(null); navigateTo('menu'); }}
+<<<<<<< HEAD
                 debugUnlockAllNodes={debugUnlockAllNodes}
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
             />
         )}
       </div>
@@ -493,10 +684,16 @@ function App() {
             profile={currentProfile} 
             capturedData={currentSaveData} 
             onBack={() => navigateTo('game_mode_selection')} 
+<<<<<<< HEAD
             debugUnlockAllNodes={debugUnlockAllNodes}
             
             onEnterGym={(gymId) => { 
                 const userTeam = (currentProfile.team || []).filter((pokeId) => isPokemonOwned(currentSaveData, pokeId));
+=======
+            
+            onEnterGym={(gymId) => { 
+                const userTeam = currentProfile.team || [];
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 if (userTeam.length < 3) {
                    showAlert(
                      "ACCESO DENEGADO", 
@@ -513,6 +710,7 @@ function App() {
         )}
       </div>
 
+<<<<<<< HEAD
       <div className={`screen ${activeView === "rocket_map" ? "visible" : "hidden"}`}>
         {currentProfile && (
           <RocketSelection
@@ -606,6 +804,8 @@ function App() {
         )}
       </div>
 
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       <div className={`screen ${activeView === "gym_battle" ? "visible" : "hidden"}`}>
         {currentProfile && selectedGymId && activeView === 'gym_battle' && (
             <GymBattle 
@@ -613,6 +813,7 @@ function App() {
                 gymId={selectedGymId}
                 userName={currentProfile.name}
                 profileId={currentProfile.id}
+<<<<<<< HEAD
                 battleData={selectedGameMode === 'elite' ? ELITE_DATA : undefined}
                 progressNamespace={selectedGameMode === 'elite' ? 'elite' : 'gym'}
                 userTeam={(currentProfile.team || []).filter((pokeId) => isPokemonOwned(currentSaveData, pokeId))} 
@@ -636,16 +837,29 @@ function App() {
                         return;
                     }
 
+=======
+                userTeam={currentProfile.team || []} 
+                
+                onVictory={(rewardPokemon) => { 
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                     const currentProgress = currentProfile.gymProgress || 0;
                     
                     const gymIndex = ["pallet-town", "pewter", "cerulean", "vermilion", "celadon", "fuchsia", "saffron", "cinnabar", "viridian"].indexOf(selectedGymId);
                     const newProgress = Math.max(currentProgress, gymIndex + 1);
                     
+<<<<<<< HEAD
                     const updatedProfile = awardBattleExperience({ ...currentProfile, gymProgress: newProgress }, 'gymLeader');
                     handleUpdateProfile(updatedProfile); 
                     
                     if (rewardPokemon) {
                         const newSaveData = registerCapture(currentSaveData, rewardPokemon);
+=======
+                    const updatedProfile = { ...currentProfile, gymProgress: newProgress };
+                    handleUpdateProfile(updatedProfile); 
+                    
+                    if (rewardPokemon) {
+                        const newSaveData = { ...currentSaveData, [rewardPokemon.id]: true };
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                         setCurrentSaveData(newSaveData);
                         localStorage.setItem(`save_file_${currentProfile.id}`, JSON.stringify(newSaveData));
                         localStorage.setItem('pokemonQuizSaveData', JSON.stringify(newSaveData));
@@ -664,18 +878,30 @@ function App() {
                     }
 
                     setSelectedGymId(null);
+<<<<<<< HEAD
                     setActiveView(selectedGameMode === 'rocket' ? 'rocket_map' : selectedGameMode === 'elite' ? 'elite_map' : 'gym_map');
+=======
+                    setActiveView('gym_map');
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 }}
                 
                 onDefeat={() => {
                     showAlert("DERROTA", "Has sido derrotado. ¡Entrena más y vuelve a intentarlo!", "error");
                     setSelectedGymId(null);
+<<<<<<< HEAD
                     setActiveView(selectedGameMode === 'rocket' ? 'rocket_map' : selectedGameMode === 'elite' ? 'elite_map' : 'gym_map');
+=======
+                    setActiveView('gym_map');
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 }}
                 
                 onExit={() => {
                     setSelectedGymId(null);
+<<<<<<< HEAD
                     setActiveView(selectedGameMode === 'rocket' ? 'rocket_map' : selectedGameMode === 'elite' ? 'elite_map' : 'gym_map');
+=======
+                    setActiveView('gym_map');
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 }}
             />
         )}
@@ -691,14 +917,21 @@ function App() {
                 key={gameId} 
                 initialCapturedData={currentSaveData}
                 profile={currentProfile}
+<<<<<<< HEAD
                 onProfileUpdate={handleUpdateProfile}
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                 onAlert={showAlert} 
                 onGoBack={() => { 
                     if (currentProfile) { 
                         const currentProgress = localStorage.getItem('pokemonQuizSaveData'); 
                         if (currentProgress) {
                             localStorage.setItem(`save_file_${currentProfile.id}`, currentProgress);
+<<<<<<< HEAD
                             setCurrentSaveData(normalizeSaveData(JSON.parse(currentProgress)));
+=======
+                            setCurrentSaveData(JSON.parse(currentProgress));
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                         }
                     } 
                     navigateTo('game_mode_selection'); 
@@ -723,6 +956,7 @@ function App() {
         )}
       </div>
 
+<<<<<<< HEAD
       <div className={`screen ${activeView === "profile" ? "visible" : "hidden"}`}>
         {currentProfile && (
           <TrainerProfile
@@ -736,6 +970,8 @@ function App() {
         )}
       </div>
 
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       {/* --- AQUÍ RENDERIZAMOS LA ALERTA --- */}
       <GameAlert 
           isOpen={alertConfig.isOpen}
@@ -749,4 +985,8 @@ function App() {
   );
 }
 
+<<<<<<< HEAD
 export default App;
+=======
+export default App;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

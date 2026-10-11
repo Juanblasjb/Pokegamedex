@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ArrowLeft, Menu, Trophy, Map, BookOpen, Play, Lock, ChevronLeft, ChevronRight, Leaf, Shield, LogIn } from 'lucide-react';
+<<<<<<< HEAD
 import { countRegisteredSpecies, normalizeSaveData } from '../utils/captureSystem';
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
 // --- DEFINICIÓN DE DATOS ---
 const ILLUSTRATIONS = {
@@ -38,7 +41,11 @@ const MODES = [
     desc: 'Derrota a la Élite 4 y al Campeón para convertirte en Leyenda.',
     icon: <Trophy size={20} />,
     color: 'from-purple-600 to-indigo-600',
+<<<<<<< HEAD
     rules: ["Req: 8 Medallas + 80 Capturas.", "Lore avanzado.", "Encuentro con Mewtwo."]
+=======
+    rules: ["Req: 8 Medallas + 90 Capturas.", "Lore avanzado.", "Encuentro con Mewtwo."]
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   },{
     id: 'rocket',
     title: 'TEAM ROCKET',
@@ -47,7 +54,11 @@ const MODES = [
     icon: <Shield size={20} />,
     // CAMBIO DE COLOR: Negro a Rojo para estética villano
     color: 'from-gray-900 to-red-900', 
+<<<<<<< HEAD
     rules: ["Se desbloquea con 15 capturas.", "Batallas dobles.", "Dinero y objetos en riesgo."]
+=======
+    rules: ["Batallas dobles.", "Robo de objetos.", "Historia oscura."]
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   },
   {
     id: 'safari',
@@ -104,11 +115,17 @@ const GameModeCard = React.memo(({ mode, isActive, index, onClick, capturedCount
                 ${isActive ? 'w-48 h-64 -translate-y-4 z-10' : 'w-36 h-48 translate-y-2 opacity-40 hover:opacity-80 hover:-translate-y-0 z-0'}
             `}
         >
+<<<<<<< HEAD
             <div
                 style={isActive ? { boxShadow: `0 0 30px ${glowColor}` } : undefined}
                 className={`
                 absolute inset-0 bg-[#020617] overflow-hidden transform skew-x-[-10deg] border-2 transition-all duration-300
                 ${isActive ? borderColor : 'border-slate-700 grayscale'}
+=======
+            <div className={`
+                absolute inset-0 bg-[#020617] overflow-hidden transform skew-x-[-10deg] border-2 transition-all duration-300
+                ${isActive ? `${borderColor} shadow-[0_0_30px_${glowColor}]` : 'border-slate-700 grayscale'}
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
             `}>
                 {/* Fondo animado solo si está activo */}
                 {isActive && (
@@ -155,14 +172,22 @@ const GameModeCard = React.memo(({ mode, isActive, index, onClick, capturedCount
 });
 
 // --- COMPONENTE PRINCIPAL ---
+<<<<<<< HEAD
 const GameModeSelection = ({ profile, capturedData, onStartMode, onBack, onGoToMenu, debugUnlockAllNodes = false }) => {
+=======
+const GameModeSelection = ({ profile, capturedData, onStartMode, onBack, onGoToMenu }) => {
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [currentIllustration, setCurrentIllustration] = useState(ILLUSTRATIONS.pokedex[0]);
   const [animateImg, setAnimateImg] = useState(false);
 
   // Optimizamos la lectura de datos
   const stats = useMemo(() => {
+<<<<<<< HEAD
     const count = capturedData ? countRegisteredSpecies(normalizeSaveData(capturedData)) : 0;
+=======
+    const count = capturedData ? (Array.isArray(capturedData) ? capturedData.length : Object.values(capturedData).filter(x=>x === true).length) : 0;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
     return {
         capturedCount: count,
         gymProgress: profile.gymProgress || 0,
@@ -175,9 +200,15 @@ const GameModeSelection = ({ profile, capturedData, onStartMode, onBack, onGoToM
 
   // --- LÓGICA DE BLOQUEO CORREGIDA ---
   // Definimos las condiciones individuales PRIMERO
+<<<<<<< HEAD
   const isGymLocked = !debugUnlockAllNodes && stats.capturedCount < 5;
   const isEliteLocked = stats.capturedCount < 80 || stats.gymProgress < 8;
   const isRocketLocked = !debugUnlockAllNodes && (stats.capturedCount < 15 || !stats.rocketUnlocked);
+=======
+  const isGymLocked = stats.capturedCount < 5;
+  const isEliteLocked = stats.capturedCount < 80 || stats.gymProgress < 8;
+  const isRocketLocked = !stats.rocketUnlocked; // Se desbloquea si el flag es true
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   // Lógica general para el botón de inicio
   const isCurrentLocked = 
@@ -209,7 +240,11 @@ const GameModeSelection = ({ profile, capturedData, onStartMode, onBack, onGoToM
   const goPrev = () => setSelectedIndex(prev => Math.max(prev - 1, 0));
 
   return (
+<<<<<<< HEAD
     <div className="aaa-mode-selection w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
+=======
+    <div className="w-screen h-screen bg-[#0f172a] text-white relative overflow-hidden font-sans selection:bg-cyan-500 selection:text-white">
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       {/* FONDOS */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 z-0"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.10)_1px,transparent_1px)] bg-[size:40px_40px] z-0 pointer-events-none"></div>
@@ -303,4 +338,8 @@ const GameModeSelection = ({ profile, capturedData, onStartMode, onBack, onGoToM
   );
 };
 
+<<<<<<< HEAD
 export default GameModeSelection;
+=======
+export default GameModeSelection;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

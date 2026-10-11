@@ -6291,6 +6291,14 @@ export const POKEMON_DATA = [
     height: "1.0 m",
     weight: "13.0 kg",
     bonusQuestion: {
+<<<<<<< HEAD
+=======
+    question: "En Super Smash Bros. Brawl y Ultimate, ¿qué movimiento de Ivysaur es un ataque de agarre a distancia?",
+    options: ["Hoja Afilada", "Bomba Germen", "Síntesis", "Látigo Cepa"],
+    correct: 3 // Látigo Cepa funciona como un "tether grab".
+},
+    bonusQuestion: {
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       question: "Existe una discrepancia curiosa en el peso de Magneton respecto a Magnemite. Si Magnemite pesa 6.0 kg y Magneton son 3 Magnemites, ¿cuánto debería pesar y cuánto pesa realmente?",
       options: ["Debería 18kg / Pesa 60kg", "Debería 18kg / Pesa 18kg", "Debería 6kg / Pesa 60kg", "Debería 30kg / Pesa 30kg"],
       correct: 0

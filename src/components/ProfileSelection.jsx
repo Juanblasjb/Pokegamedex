@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { availableSkins } from './skins';
 import { Star, ArrowLeft, Trash2, X, Plus } from 'lucide-react';
+<<<<<<< HEAD
 import DeleteProfileModal from './DeleteProfileModal';
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
 const ProfileSelection = ({ 
   profiles = [], 
@@ -15,14 +18,18 @@ const ProfileSelection = ({
   const MAX_PROFILES = 8; 
   const canCreateMore = safeProfiles.length < MAX_PROFILES && allowCreation;
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+<<<<<<< HEAD
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const pendingProfile = safeProfiles.find(profile => profile.id === pendingDeleteId);
+=======
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
 
   // --- ESTILOS DE BOTONES ---
   const topButtonStyleLeft = "pointer-events-auto flex items-center gap-2 bg-slate-900/90 hover:bg-slate-700 text-slate-200 hover:text-white px-5 py-2.5 rounded-tl-xl rounded-br-xl border-l-4 border-cyan-500 shadow-lg backdrop-blur-md text-xs font-bold tracking-widest uppercase transition-all transform hover:translate-x-1";
   const topButtonStyleRight = "pointer-events-auto flex items-center gap-2 px-5 py-2.5 rounded-tr-xl rounded-bl-xl border-r-4 shadow-lg backdrop-blur-md text-xs font-bold tracking-widest uppercase transition-all transform hover:-translate-x-1";
 
   return (
+<<<<<<< HEAD
     <div inert={pendingProfile ? true : undefined} className="aaa-profile-selection min-h-screen w-full flex flex-col items-center bg-[#0f172a] text-white relative selection:bg-cyan-500 selection:text-white font-sans overflow-x-hidden">
       {pendingProfile && <DeleteProfileModal
         profile={pendingProfile}
@@ -33,6 +40,9 @@ const ProfileSelection = ({
           if (safeProfiles.length <= 1) setIsDeleteMode(false);
         }}
       />}
+=======
+    <div className="min-h-screen w-full flex flex-col items-center bg-[#0f172a] text-white relative selection:bg-cyan-500 selection:text-white font-sans overflow-x-hidden">
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       
       {/* --- 1. FONDOS GLOBALES (Fixed) --- */}
       
@@ -132,7 +142,14 @@ const ProfileSelection = ({
                 key={profile.id}
                 onClick={() => {
                     if (isDeleteMode) {
+<<<<<<< HEAD
                         setPendingDeleteId(profile.id);
+=======
+                        if (window.confirm(`¿Eliminar permanentemente a ${profile.name}?`)) {
+                            onDeleteProfile(profile.id);
+                            if (safeProfiles.length <= 1) setIsDeleteMode(false);
+                        }
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
                     } else {
                         onSelectProfile && onSelectProfile(profile);
                     }
@@ -220,4 +237,8 @@ const ProfileSelection = ({
   );
 };
 
+<<<<<<< HEAD
 export default ProfileSelection;
+=======
+export default ProfileSelection;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1

@@ -19,7 +19,11 @@ const GymBattleResult = ({ result, mode, stats, message, onContinue }) => {
     userScore = 0,
     rivalScore = 0,
     suddenDeath = false,
+<<<<<<< HEAD
     experience = 0
+=======
+    money = 0 
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
   } = safeStats;
 
   // Lógica de visualización para Estadio (Ej: "2 / 3")
@@ -108,7 +112,11 @@ const GymBattleResult = ({ result, mode, stats, message, onContinue }) => {
           </>
         )}
 
+<<<<<<< HEAD
         <StatRow label="EXP obtenida" value={`+${experience} EXP`} icon={Coins} />
+=======
+        <StatRow label="Recompensa" value={`₽ ${money}`} icon={Coins} />
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
       </div>
 
       {/* --- MENSAJE INFERIOR --- */}
@@ -132,4 +140,8 @@ const GymBattleResult = ({ result, mode, stats, message, onContinue }) => {
   );
 };
 
+<<<<<<< HEAD
 export default GymBattleResult;
+=======
+export default GymBattleResult;
+>>>>>>> 9ea0f48765a23acf8ea8b3642cc3f8efd8f186b1
