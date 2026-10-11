@@ -34,6 +34,10 @@ const GymStadiumPhase = ({ userTeamIds, leaderTeamIds, onPhaseComplete, userName
   const [roundWinner, setRoundWinner] = useState(null); 
 
   const timeoutRef = useRef(null);
+  const onPhaseCompleteRef = useRef(onPhaseComplete);
+  useEffect(() => {
+    onPhaseCompleteRef.current = onPhaseComplete;
+  }, [onPhaseComplete]);
 
   // --- DATOS ---
   const userFullTeam = useMemo(() => 
@@ -149,7 +153,7 @@ const GymStadiumPhase = ({ userTeamIds, leaderTeamIds, onPhaseComplete, userName
           const userWon = scores.user > scores.leader;
           
           // 2. ENVIAMOS RESULTADOS DIRECTAMENTE AL PADRE (Sin cambiar vista interna)
-          onPhaseComplete(userWon, { 
+          onPhaseCompleteRef.current(userWon, { 
              userScore: scores.user, 
              rivalScore: scores.leader,
              battlesWon: scores.user,
@@ -165,7 +169,7 @@ const GymStadiumPhase = ({ userTeamIds, leaderTeamIds, onPhaseComplete, userName
       }, 2000); // 2 segundos para ver que el marcador subió
       return () => clearTimeout(timer);
     }
-  }, [battleState, scores, currentRound, onPhaseComplete]);
+  }, [battleState, scores, currentRound]);
 
 
   // --- COMPONENTES VISUALES ---

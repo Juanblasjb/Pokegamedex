@@ -207,14 +207,14 @@ const GymSelection = ({
                         )}
 
                         {/* Botones de Acción */}
-                        {(selectedNode.isGym || selectedNode.isTutorial) && (selectedStatus.isCurrentChallenge || debugUnlockAllNodes) && (
+                        {(selectedNode.isGym || selectedNode.isTutorial) && (selectedStatus.isCurrentChallenge || (selectedNode.isTutorial && selectedStatus.isPassed) || debugUnlockAllNodes) && (
                             <div className="mt-2">
                                 {selectedStatus.canEnter ? (
                                     <button 
                                     onClick={() => onEnterGym(selectedNode.id)}
                                     className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black italic uppercase tracking-widest text-sm rounded border-t border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 animate-pulse-slow"
                                 >
-                                    {selectedNode.isTutorial ? 'COMENZAR TUTORIAL' : (modeLabels.action || 'INICIAR BATALLA')} <Play fill="currentColor" size={10} />
+                                    {selectedNode.isTutorial ? (selectedStatus.isPassed ? 'REPETIR TUTORIAL' : 'COMENZAR TUTORIAL') : (modeLabels.action || 'INICIAR BATALLA')} <Play fill="currentColor" size={10} />
                                     </button>
                                 ) : (
                                     <button 

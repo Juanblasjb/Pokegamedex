@@ -433,11 +433,11 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, onProgressRew
                       <div className="flex flex-col justify-center h-full pl-12 md:pl-16 pr-4 z-20 animate-slide-in-left">
                           <div className="flex items-center gap-3 mb-2">
                               <div className="flex space-x-1"><div className="w-1 h-4 bg-red-600 animate-ping"></div><div className="w-1 h-4 bg-red-600"></div></div>
-                              <span className="text-[10px] font-mono text-red-500 uppercase tracking-[0.25em] font-bold">ALERTA OMEGA // JEFE FINAL</span>
+                              <span className="text-[10px] font-mono text-red-500 uppercase tracking-[0.25em] font-bold">{gymData.isTutorial ? 'ENTRENAMIENTO // PROFESOR OAK' : 'ALERTA OMEGA // JEFE FINAL'}</span>
                           </div>
                           <div className="relative">
                               <h2 className="text-5xl md:text-6xl font-black italic uppercase text-white tracking-tighter drop-shadow-2xl leading-[0.9]">
-                                  <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white to-red-200">LÍDER</span>
+                                  <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white to-red-200">{gymData.isTutorial ? 'MENTOR' : 'LÍDER'}</span>
                                   <span className="block text-red-600 animate-glitch text-shadow-red">{gymData.leader}</span>
                               </h2>
                           </div>
@@ -446,12 +446,12 @@ const GymBattle = ({ gymId, userTeam, onVictory, onDefeat, onExit, onProgressRew
                                 "{gymData.introQuote || "Has superado a mis súbditos, pero yo estoy a otro nivel. ¡Prepárate para la derrota!"}"
                               </p>
                               <div className="w-full h-px bg-red-900/50 my-3 skew-x-[3deg]"></div>
-                              <div className="flex gap-6 text-[9px] font-mono text-red-400 uppercase tracking-widest skew-x-[3deg]"><span>Clase: LÍDER</span><span>Peligro: EXTREMO</span></div>
+                              <div className="flex gap-6 text-[9px] font-mono text-red-400 uppercase tracking-widest skew-x-[3deg]"><span>Clase: {gymData.isTutorial ? 'PROFESOR' : 'LÍDER'}</span><span>{gymData.isTutorial ? 'ENTRENAMIENTO BÁSICO' : 'Peligro: EXTREMO'}</span></div>
                           </div>
                           <div className="pt-6">
                             <button onClick={() => setCurrentStage('phase_1')} className="group relative px-8 py-4 bg-gradient-to-r from-red-800 to-red-700 hover:from-red-700 hover:to-red-600 text-white font-black uppercase tracking-widest text-sm rounded-lg shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all hover:scale-[1.02] overflow-hidden border border-red-500/30">
                                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
-                                <span className="relative z-10 flex items-center gap-3">INICIAR COMBATE<Swords size={18} className="animate-pulse" /></span>
+                                <span className="relative z-10 flex items-center gap-3">{gymData.isTutorial ? 'INICIAR TUTORIAL' : 'INICIAR COMBATE'}<Swords size={18} className="animate-pulse" /></span>
                             </button>
                           </div>
                       </div>
